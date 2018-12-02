@@ -1,0 +1,166 @@
+# depslib dependency file v1.0
+1542801873 source:/home/toni/Documents/AA4/Practica2.1/main.cpp
+	<iostream>
+	<string>
+	<jdbc/mysql_connection.h>
+	<jdbc/mysql_driver.h>
+	<jdbc/cppconn/resultset.h>
+	<jdbc/cppconn/statement.h>
+
+1537897368 /home/toni/Documents/AA4/mysql-connector/include/jdbc/mysql_connection.h
+	"cppconn/connection.h"
+	<boost/shared_ptr.hpp>
+	<boost/scoped_ptr.hpp>
+
+1537897368 /home/toni/Documents/AA4/mysql-connector/include/jdbc/cppconn/connection.h
+	<map>
+	"build_config.h"
+	"warning.h"
+	"sqlstring.h"
+	"variant.h"
+
+1537897368 /home/toni/Documents/AA4/mysql-connector/include/jdbc/cppconn/build_config.h
+
+1537897368 /home/toni/Documents/AA4/mysql-connector/include/jdbc/cppconn/warning.h
+	<stdexcept>
+	<string>
+	<memory>
+	"sqlstring.h"
+
+1537897368 /home/toni/Documents/AA4/mysql-connector/include/jdbc/cppconn/sqlstring.h
+	<string>
+	<algorithm>
+	"build_config.h"
+	<iostream>
+
+1537897368 /home/toni/Documents/AA4/mysql-connector/include/jdbc/cppconn/variant.h
+	<string>
+	<map>
+	<list>
+	<algorithm>
+	<typeinfo>
+	"build_config.h"
+	"sqlstring.h"
+	"exception.h"
+
+1537897368 /home/toni/Documents/AA4/mysql-connector/include/jdbc/cppconn/exception.h
+	"build_config.h"
+	<stdexcept>
+	<string>
+	<memory>
+
+1537897368 /home/toni/Documents/AA4/mysql-connector/include/jdbc/mysql_driver.h
+	"cppconn/driver.h"
+	<boost/scoped_ptr.hpp>
+
+1537897368 /home/toni/Documents/AA4/mysql-connector/include/jdbc/cppconn/driver.h
+	"connection.h"
+	"build_config.h"
+
+1537897368 /home/toni/Documents/AA4/mysql-connector/include/jdbc/cppconn/resultset.h
+	"config.h"
+	<list>
+	<map>
+	<iostream>
+	"sqlstring.h"
+	"resultset_metadata.h"
+
+1537897368 /home/toni/Documents/AA4/mysql-connector/include/jdbc/cppconn/config.h
+	<stdint.h>
+	<inttypes.h>
+	<stdint.h>
+
+1537897368 /home/toni/Documents/AA4/mysql-connector/include/jdbc/cppconn/resultset_metadata.h
+	"sqlstring.h"
+	"datatype.h"
+
+1537897368 /home/toni/Documents/AA4/mysql-connector/include/jdbc/cppconn/datatype.h
+
+1537897368 /home/toni/Documents/AA4/mysql-connector/include/jdbc/cppconn/statement.h
+	"config.h"
+	"resultset.h"
+	<string>
+
+1543752789 source:/home/toni/Documents/Practicas/AA4/Practica2.1/main.cpp
+	<iostream>
+	<string>
+	<stdlib.h>
+	<jdbc/mysql_connection.h>
+	<jdbc/mysql_driver.h>
+	<jdbc/cppconn/resultset.h>
+	<jdbc/cppconn/statement.h>
+
+1543163590 /home/toni/Documents/Practicas/AA4/mysql-connector/include/jdbc/mysql_connection.h
+	"cppconn/connection.h"
+	<boost/shared_ptr.hpp>
+	<boost/scoped_ptr.hpp>
+
+1543163590 /home/toni/Documents/Practicas/AA4/mysql-connector/include/jdbc/cppconn/connection.h
+	<map>
+	"build_config.h"
+	"warning.h"
+	"sqlstring.h"
+	"variant.h"
+
+1543163590 /home/toni/Documents/Practicas/AA4/mysql-connector/include/jdbc/cppconn/build_config.h
+
+1543163590 /home/toni/Documents/Practicas/AA4/mysql-connector/include/jdbc/cppconn/warning.h
+	<stdexcept>
+	<string>
+	<memory>
+	"sqlstring.h"
+
+1543163590 /home/toni/Documents/Practicas/AA4/mysql-connector/include/jdbc/cppconn/sqlstring.h
+	<string>
+	<algorithm>
+	"build_config.h"
+	<iostream>
+
+1543163590 /home/toni/Documents/Practicas/AA4/mysql-connector/include/jdbc/cppconn/variant.h
+	<string>
+	<map>
+	<list>
+	<algorithm>
+	<typeinfo>
+	"build_config.h"
+	"sqlstring.h"
+	"exception.h"
+
+1543163590 /home/toni/Documents/Practicas/AA4/mysql-connector/include/jdbc/cppconn/exception.h
+	"build_config.h"
+	<stdexcept>
+	<string>
+	<memory>
+
+1543163590 /home/toni/Documents/Practicas/AA4/mysql-connector/include/jdbc/mysql_driver.h
+	"cppconn/driver.h"
+	<boost/scoped_ptr.hpp>
+
+1543163590 /home/toni/Documents/Practicas/AA4/mysql-connector/include/jdbc/cppconn/driver.h
+	"connection.h"
+	"build_config.h"
+
+1543163590 /home/toni/Documents/Practicas/AA4/mysql-connector/include/jdbc/cppconn/resultset.h
+	"config.h"
+	<list>
+	<map>
+	<iostream>
+	"sqlstring.h"
+	"resultset_metadata.h"
+
+1543163590 /home/toni/Documents/Practicas/AA4/mysql-connector/include/jdbc/cppconn/config.h
+	<stdint.h>
+	<inttypes.h>
+	<stdint.h>
+
+1543163590 /home/toni/Documents/Practicas/AA4/mysql-connector/include/jdbc/cppconn/resultset_metadata.h
+	"sqlstring.h"
+	"datatype.h"
+
+1543163590 /home/toni/Documents/Practicas/AA4/mysql-connector/include/jdbc/cppconn/datatype.h
+
+1543163590 /home/toni/Documents/Practicas/AA4/mysql-connector/include/jdbc/cppconn/statement.h
+	"config.h"
+	"resultset.h"
+	<string>
+
