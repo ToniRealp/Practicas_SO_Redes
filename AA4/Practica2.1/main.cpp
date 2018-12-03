@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <ctime>
+#include <stdio.h>
+#include <stdlib.h>
 #include <jdbc/mysql_connection.h>
 #include <jdbc/mysql_driver.h>
 #include <jdbc/cppconn/resultset.h>
@@ -15,9 +17,7 @@ try{
     sql::Statement* stmt =conn->createStatement();
     sql::ResultSet* user;
     sql::ResultSet* pokemons;
-    tm* logInTime, * logOutTime;
-    char logInBuf [22];
-    char logOutBuf [22];
+    time_t logInSec, logOutSec;
     std::string userName, password;
     bool validName = false;
 
@@ -87,8 +87,8 @@ try{
             if(mapName==maps->getString("Name")){
                 mapSelected = true;
                 std::cout<<"Map "<<mapName<<" selected";
-                time_t now = time(0);
-                logInTime=localtime(&now);
+                logInSec = time(0);
+
                 break;
             }
         }
@@ -105,20 +105,28 @@ try{
 
         std::cin>>exit;
         if(exit=="exit"){
+            tm* logInTime, * logOutTime;
+            char logInBuf [22];
+            char logOutBuf [22];
+
+            logInTime=localtime(&logInSec);
             strftime(logInBuf,22,"%F %X\0",logInTime);
             std::string logInStr(logInBuf);
 
-            time_t now = time(0);
-            logOutTime=localtime(&now);
+            time_t logOutSec = time(0);
+            logOutTime=localtime(&logOutSec);
             strftime(logOutBuf,22,"%F %X\0",logOutTime);
             std::string logOutStr(logOutBuf);
 
-            stmt->executeUpdate("INSERT INTO Sesion(PlayerID, LogInTime, LogOutTime) VALUES ('"+user->getString("ID")+"','"+logInStr+"','"+logOutStr+"')");
+            stmt->executeUpdate("INSERT INTO Sesion(PlayerID, LogInTime, LogOutTime) VALUES ("+user->getString("ID")+",'"+logInStr+"','"+logOutStr+"')");
+            int secondsPlayed = user->getInt("SecondsPlayed");
+            secondsPlayed+=difftime(logOutSec,logInSec);
+
+            std::string temp = std::to_string(secondsPlayed);
+            stmt->executeUpdate("UPDATE Player SET SecondsPlayed =" + temp + " WHERE Player.ID = "+user->getString("ID"));
             isPlaying=false;
         }
     }
-
-
 
     user->close();
     delete(user);
