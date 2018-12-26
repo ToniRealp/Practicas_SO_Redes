@@ -164,7 +164,7 @@
 	"resultset.h"
 	<string>
 
-1543861066 source:/home/toni/Documents/Practicas_SO_Redes/AA4/Practica2.1/main.cpp
+1543861499 source:/home/toni/Documents/Practicas_SO_Redes/AA4/Practica2.1/main.cpp
 	<iostream>
 	<string>
 	<ctime>
@@ -175,33 +175,33 @@
 	<jdbc/cppconn/resultset.h>
 	<jdbc/cppconn/statement.h>
 
-1543163590 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/mysql_connection.h
+1543760229 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/mysql_connection.h
 	"cppconn/connection.h"
 	<boost/shared_ptr.hpp>
 	<boost/scoped_ptr.hpp>
 
-1543163590 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/connection.h
+1543760229 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/connection.h
 	<map>
 	"build_config.h"
 	"warning.h"
 	"sqlstring.h"
 	"variant.h"
 
-1543163590 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/build_config.h
+1543760229 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/build_config.h
 
-1543163590 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/warning.h
+1543760229 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/warning.h
 	<stdexcept>
 	<string>
 	<memory>
 	"sqlstring.h"
 
-1543163590 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/sqlstring.h
+1543760229 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/sqlstring.h
 	<string>
 	<algorithm>
 	"build_config.h"
 	<iostream>
 
-1543163590 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/variant.h
+1543760229 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/variant.h
 	<string>
 	<map>
 	<list>
@@ -211,21 +211,21 @@
 	"sqlstring.h"
 	"exception.h"
 
-1543163590 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/exception.h
+1543760229 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/exception.h
 	"build_config.h"
 	<stdexcept>
 	<string>
 	<memory>
 
-1543163590 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/mysql_driver.h
+1543760229 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/mysql_driver.h
 	"cppconn/driver.h"
 	<boost/scoped_ptr.hpp>
 
-1543163590 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/driver.h
+1543760229 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/driver.h
 	"connection.h"
 	"build_config.h"
 
-1543163590 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/resultset.h
+1543760229 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/resultset.h
 	"config.h"
 	<list>
 	<map>
@@ -233,18 +233,18 @@
 	"sqlstring.h"
 	"resultset_metadata.h"
 
-1543163590 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/config.h
+1543760229 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/config.h
 	<stdint.h>
 	<inttypes.h>
 	<stdint.h>
 
-1543163590 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/resultset_metadata.h
+1543760229 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/resultset_metadata.h
 	"sqlstring.h"
 	"datatype.h"
 
-1543163590 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/datatype.h
+1543760229 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/datatype.h
 
-1543163590 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/statement.h
+1543760229 /home/toni/Documents/Practicas_SO_Redes/AA4/mysql-connector/include/jdbc/cppconn/statement.h
 	"config.h"
 	"resultset.h"
 	<string>
