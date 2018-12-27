@@ -4,16 +4,29 @@
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
 
-void send(sf::TcpSocket* socket, std::string text){
-    while(true){
-        std::string data(text);
-        if(socket->send(data.c_str(), 100)!=sf::Socket::Done){
-            std::cout<<"error en el envio del paquete, el servidor se ha desconectado";
-            break;
+void send(sf::TcpSocket* socket){
+
+    bool validName = false;
+    sf::Packet packet;
+    std::string username, password;
+    do{
+		///Login / Sign In
+		//Se pregunta el Username
+        std::cout<<"Username:"<<std::endl;
+        std::cin>>username;
+        if(username=="nuevo"){
+            packet << username;
+        }else{
+            std::cout<<"Contraseña:"<<std::endl;
+            std::cin>>password;
+            packet << username << password;
         }
-        if(data=="exit")
-            break;
-    }
+
+        socket->send(packet);
+        socket->receive(packet);
+        packet>>validName;
+
+    }while(!validName);
 }
 
 std::string receive(sf::TcpSocket* socket){
