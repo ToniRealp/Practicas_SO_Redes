@@ -17,10 +17,10 @@
 				<Linker>
 					<Add library="../mysql-connector/lib64/libmysqlcppconn.so" />
 					<Add library="../mysql-connector/lib64/libmysqlcppconn8.so" />
-					<Add library="../SFML-2.5.0/lib/libsfml-graphics-d.so" />
-					<Add library="../SFML-2.5.0/lib/libsfml-network-d.so" />
-					<Add library="../SFML-2.5.0/lib/libsfml-system-d.so" />
-					<Add library="../SFML-2.5.0/lib/libsfml-window-d.so" />
+					<Add library="../SFML-2.5.1/lib/libsfml-graphics.so" />
+					<Add library="../SFML-2.5.1/lib/libsfml-network.so" />
+					<Add library="../SFML-2.5.1/lib/libsfml-system.so" />
+					<Add library="../SFML-2.5.1/lib/libsfml-window.so" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -39,11 +39,11 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
-			<Add directory="../SFML-2.5.0/include" />
+			<Add directory="../SFML-2.5.1/include" />
 			<Add directory="../mysql-connector/include" />
 		</Compiler>
 		<Linker>
-			<Add directory="../SFML-2.5.0/lib" />
+			<Add directory="../SFML-2.5.1/lib" />
 			<Add directory="../mysql-connector/lib64" />
 		</Linker>
 		<Unit filename="main_Cliente.cpp" />

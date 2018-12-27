@@ -43,15 +43,14 @@ int main(){
     sf::TcpSocket socket;
     sf::Socket::Status status = socket.connect("10.38.1.9", 50000, sf::seconds(15.f));
     sf::Thread sendThread(send,&socket);
-    sf::Thread receiveThread(receive,&socket);
+    //sf::Thread receiveThread(receive,&socket);
     if (status != sf::Socket::Done)
     {
       std::cout<<"no se ha podido establecer la conexion";
     }
     else{
         sendThread.launch();
-        receiveThread.launch();
+        //receiveThread.launch();
     }
-    receiveThread.wait();
     socket.disconnect();
 }
