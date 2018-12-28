@@ -46,6 +46,7 @@
 			<Add directory="../mysql-connector/include" />
 		</Compiler>
 		<Linker>
+			<Add option="-pthread" />
 			<Add directory="../SFML-2.5.1/lib" />
 			<Add directory="../mysql-connector/lib64" />
 		</Linker>

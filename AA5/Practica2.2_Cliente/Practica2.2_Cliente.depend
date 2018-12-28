@@ -1,10 +1,9 @@
 # depslib dependency file v1.0
-1545928104 source:/home/toni/Documents/Practicas_SO_Redes/AA5/Practica2.2_Cliente/main_Cliente.cpp
+1546024355 source:/home/toni/Documents/Practicas_SO_Redes/AA5/Practica2.2_Cliente/main_Cliente.cpp
 	<iostream>
-	<SFML/Graphics.hpp>
+	<unistd.h>
 	<SFML/Network.hpp>
-	<SFML/Window.hpp>
-	<SFML/System.hpp>
+	<thread>
 
 1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Graphics.hpp
 	<SFML/Window.hpp>
@@ -52,7 +51,7 @@
 	<SFML/Window/WindowHandle.hpp>
 	<SFML/Window/WindowStyle.hpp>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System.hpp
 	<SFML/Config.hpp>
 	<SFML/System/Clock.hpp>
 	<SFML/System/Err.hpp>
@@ -72,24 +71,24 @@
 	<SFML/System/Vector2.hpp>
 	<SFML/System/Vector3.hpp>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Config.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Config.hpp
 	"TargetConditionals.h"
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Clock.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Clock.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/Time.hpp>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Export.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Export.hpp
 	<SFML/Config.hpp>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Time.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Time.hpp
 	<SFML/System/Export.hpp>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Err.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Err.hpp
 	<SFML/System/Export.hpp>
 	<ostream>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/FileInputStream.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/FileInputStream.hpp
 	<SFML/Config.hpp>
 	<SFML/System/Export.hpp>
 	<SFML/System/InputStream.hpp>
@@ -97,32 +96,32 @@
 	<cstdio>
 	<string>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/InputStream.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/InputStream.hpp
 	<SFML/Config.hpp>
 	<SFML/System/Export.hpp>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/NonCopyable.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/NonCopyable.hpp
 	<SFML/System/Export.hpp>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Lock.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Lock.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/NonCopyable.hpp>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/MemoryInputStream.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/MemoryInputStream.hpp
 	<SFML/Config.hpp>
 	<SFML/System/InputStream.hpp>
 	<SFML/System/Export.hpp>
 	<cstdlib>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Mutex.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Mutex.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/NonCopyable.hpp>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Sleep.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Sleep.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/Time.hpp>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/String.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/String.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/Utf.hpp>
 	<iterator>
@@ -130,7 +129,7 @@
 	<string>
 	<SFML/System/String.inl>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Utf.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Utf.hpp
 	<SFML/Config.hpp>
 	<algorithm>
 	<locale>
@@ -138,38 +137,38 @@
 	<cstdlib>
 	<SFML/System/Utf.inl>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Utf.inl
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Utf.inl
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/String.inl
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/String.inl
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Thread.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Thread.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/NonCopyable.hpp>
 	<cstdlib>
 	<SFML/System/Thread.inl>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Thread.inl
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Thread.inl
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/ThreadLocal.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/ThreadLocal.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/NonCopyable.hpp>
 	<cstdlib>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/ThreadLocalPtr.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/ThreadLocalPtr.hpp
 	<SFML/System/ThreadLocal.hpp>
 	<SFML/System/ThreadLocalPtr.inl>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/ThreadLocalPtr.inl
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/ThreadLocalPtr.inl
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Vector2.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Vector2.hpp
 	<SFML/System/Vector2.inl>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Vector2.inl
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Vector2.inl
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Vector3.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Vector3.hpp
 	<SFML/System/Vector3.inl>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Vector3.inl
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/System/Vector3.inl
 
 1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Window/Clipboard.hpp
 	<SFML/Window/Export.hpp>
@@ -415,7 +414,7 @@
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Window/GlResource.hpp>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network.hpp
 	<SFML/System.hpp>
 	<SFML/Network/Ftp.hpp>
 	<SFML/Network/Http.hpp>
@@ -428,7 +427,7 @@
 	<SFML/Network/TcpSocket.hpp>
 	<SFML/Network/UdpSocket.hpp>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/Ftp.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/Ftp.hpp
 	<SFML/Network/Export.hpp>
 	<SFML/Network/TcpSocket.hpp>
 	<SFML/System/NonCopyable.hpp>
@@ -436,25 +435,25 @@
 	<string>
 	<vector>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/Export.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/Export.hpp
 	<SFML/Config.hpp>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/TcpSocket.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/TcpSocket.hpp
 	<SFML/Network/Export.hpp>
 	<SFML/Network/Socket.hpp>
 	<SFML/System/Time.hpp>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/Socket.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/Socket.hpp
 	<SFML/Network/Export.hpp>
 	<SFML/Network/SocketHandle.hpp>
 	<SFML/System/NonCopyable.hpp>
 	<vector>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/SocketHandle.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/SocketHandle.hpp
 	<SFML/Config.hpp>
 	<basetsd.h>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/Http.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/Http.hpp
 	<SFML/Network/Export.hpp>
 	<SFML/Network/IpAddress.hpp>
 	<SFML/Network/TcpSocket.hpp>
@@ -463,28 +462,28 @@
 	<map>
 	<string>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/IpAddress.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/IpAddress.hpp
 	<SFML/Network/Export.hpp>
 	<SFML/System/Time.hpp>
 	<istream>
 	<ostream>
 	<string>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/Packet.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/Packet.hpp
 	<SFML/Network/Export.hpp>
 	<string>
 	<vector>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/SocketSelector.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/SocketSelector.hpp
 	<SFML/Network/Export.hpp>
 	<SFML/System/Time.hpp>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/TcpListener.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/TcpListener.hpp
 	<SFML/Network/Export.hpp>
 	<SFML/Network/Socket.hpp>
 	<SFML/Network/IpAddress.hpp>
 
-1539885013 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/UdpSocket.hpp
+1545932275 /home/toni/Documents/Practicas_SO_Redes/AA5/SFML-2.5.1/include/SFML/Network/UdpSocket.hpp
 	<SFML/Network/Export.hpp>
 	<SFML/Network/Socket.hpp>
 	<SFML/Network/IpAddress.hpp>
