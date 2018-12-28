@@ -25,7 +25,7 @@ void send(sf::TcpSocket* socket){
         socket->send(packet);
         socket->receive(packet);
         packet>>validName;
-
+        std::cout<<validName;
     }while(!validName);
 }
 
