@@ -1,17 +1,17 @@
 #include <iostream>
-#include <SFML/Graphics.hpp>
+#include <unistd.h>
 #include <SFML/Network.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/System.hpp>
+#include <thread>
 
 void send(sf::TcpSocket* socket){
 
     bool validName = false;
-    sf::Packet packet;
+
     std::string username, password;
     do{
 		///Login / Sign In
 		//Se pregunta el Username
+        sf::Packet packet;
         std::cout<<"Username:"<<std::endl;
         std::cin>>username;
         if(username=="nuevo"){
@@ -41,16 +41,16 @@ std::string receive(sf::TcpSocket* socket){
 
 int main(){
     sf::TcpSocket socket;
-    sf::Socket::Status status = socket.connect("10.38.1.9", 50000, sf::seconds(15.f));
-    sf::Thread sendThread(send,&socket);
-    //sf::Thread receiveThread(receive,&socket);
+    sf::Socket::Status status = socket.connect("79.154.246.236", 50000, sf::seconds(5.f));
+
     if (status != sf::Socket::Done)
     {
       std::cout<<"no se ha podido establecer la conexion";
+      socket.disconnect();
     }
-    else{
-        sendThread.launch();
-        //receiveThread.launch();
-    }
+
+    std::thread sendThread(send,&socket);
+
+    sendThread.join();
     socket.disconnect();
 }
