@@ -1,0 +1,601 @@
+# depslib dependency file v1.0
+1546007609 source:/home/soredes/Downloads/AA5MySQLSFMLLinkado/AA5Plantilla/main.cpp
+	<iostream>
+	<unistd.h>
+	<SFML/Network.hpp>
+	<thread>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/Network.hpp
+	<SFML/System.hpp>
+	<SFML/Network/Ftp.hpp>
+	<SFML/Network/Http.hpp>
+	<SFML/Network/IpAddress.hpp>
+	<SFML/Network/Packet.hpp>
+	<SFML/Network/Socket.hpp>
+	<SFML/Network/SocketHandle.hpp>
+	<SFML/Network/SocketSelector.hpp>
+	<SFML/Network/TcpListener.hpp>
+	<SFML/Network/TcpSocket.hpp>
+	<SFML/Network/UdpSocket.hpp>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System.hpp
+	<SFML/Config.hpp>
+	<SFML/System/Clock.hpp>
+	<SFML/System/Err.hpp>
+	<SFML/System/FileInputStream.hpp>
+	<SFML/System/InputStream.hpp>
+	<SFML/System/Lock.hpp>
+	<SFML/System/MemoryInputStream.hpp>
+	<SFML/System/Mutex.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<SFML/System/Sleep.hpp>
+	<SFML/System/String.hpp>
+	<SFML/System/Thread.hpp>
+	<SFML/System/ThreadLocal.hpp>
+	<SFML/System/ThreadLocalPtr.hpp>
+	<SFML/System/Time.hpp>
+	<SFML/System/Utf.hpp>
+	<SFML/System/Vector2.hpp>
+	<SFML/System/Vector3.hpp>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/Config.hpp
+	"TargetConditionals.h"
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/Clock.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/Time.hpp>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/Export.hpp
+	<SFML/Config.hpp>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/Time.hpp
+	<SFML/System/Export.hpp>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/Err.hpp
+	<SFML/System/Export.hpp>
+	<ostream>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/FileInputStream.hpp
+	<SFML/Config.hpp>
+	<SFML/System/Export.hpp>
+	<SFML/System/InputStream.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<cstdio>
+	<string>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/InputStream.hpp
+	<SFML/Config.hpp>
+	<SFML/System/Export.hpp>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/NonCopyable.hpp
+	<SFML/System/Export.hpp>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/Lock.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/NonCopyable.hpp>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/MemoryInputStream.hpp
+	<SFML/Config.hpp>
+	<SFML/System/InputStream.hpp>
+	<SFML/System/Export.hpp>
+	<cstdlib>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/Mutex.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/NonCopyable.hpp>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/Sleep.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/Time.hpp>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/String.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/Utf.hpp>
+	<iterator>
+	<locale>
+	<string>
+	<SFML/System/String.inl>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/Utf.hpp
+	<SFML/Config.hpp>
+	<algorithm>
+	<locale>
+	<string>
+	<cstdlib>
+	<SFML/System/Utf.inl>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/Utf.inl
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/String.inl
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/Thread.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<cstdlib>
+	<SFML/System/Thread.inl>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/Thread.inl
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/ThreadLocal.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<cstdlib>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/ThreadLocalPtr.hpp
+	<SFML/System/ThreadLocal.hpp>
+	<SFML/System/ThreadLocalPtr.inl>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/ThreadLocalPtr.inl
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/Vector2.hpp
+	<SFML/System/Vector2.inl>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/Vector2.inl
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/Vector3.hpp
+	<SFML/System/Vector3.inl>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/System/Vector3.inl
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/Network/Ftp.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/Network/TcpSocket.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<SFML/System/Time.hpp>
+	<string>
+	<vector>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/Network/Export.hpp
+	<SFML/Config.hpp>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/Network/TcpSocket.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/Network/Socket.hpp>
+	<SFML/System/Time.hpp>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/Network/Socket.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/Network/SocketHandle.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<vector>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/Network/SocketHandle.hpp
+	<SFML/Config.hpp>
+	<basetsd.h>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/Network/Http.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/Network/IpAddress.hpp>
+	<SFML/Network/TcpSocket.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<SFML/System/Time.hpp>
+	<map>
+	<string>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/Network/IpAddress.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/System/Time.hpp>
+	<istream>
+	<ostream>
+	<string>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/Network/Packet.hpp
+	<SFML/Network/Export.hpp>
+	<string>
+	<vector>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/Network/SocketSelector.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/System/Time.hpp>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/Network/TcpListener.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/Network/Socket.hpp>
+	<SFML/Network/IpAddress.hpp>
+
+1525729174 /home/soredes/Downloads/AA5MySQLSFMLLinkado/SFML-2.5.0/include/SFML/Network/UdpSocket.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/Network/Socket.hpp>
+	<SFML/Network/IpAddress.hpp>
+	<vector>
+
+1546007630 source:/home/toni/Downloads/ReceiveFuncionando/AA5Plantilla/main.cpp
+	<iostream>
+	<unistd.h>
+	<SFML/Network.hpp>
+	<thread>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network.hpp
+	<SFML/System.hpp>
+	<SFML/Network/Ftp.hpp>
+	<SFML/Network/Http.hpp>
+	<SFML/Network/IpAddress.hpp>
+	<SFML/Network/Packet.hpp>
+	<SFML/Network/Socket.hpp>
+	<SFML/Network/SocketHandle.hpp>
+	<SFML/Network/SocketSelector.hpp>
+	<SFML/Network/TcpListener.hpp>
+	<SFML/Network/TcpSocket.hpp>
+	<SFML/Network/UdpSocket.hpp>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System.hpp
+	<SFML/Config.hpp>
+	<SFML/System/Clock.hpp>
+	<SFML/System/Err.hpp>
+	<SFML/System/FileInputStream.hpp>
+	<SFML/System/InputStream.hpp>
+	<SFML/System/Lock.hpp>
+	<SFML/System/MemoryInputStream.hpp>
+	<SFML/System/Mutex.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<SFML/System/Sleep.hpp>
+	<SFML/System/String.hpp>
+	<SFML/System/Thread.hpp>
+	<SFML/System/ThreadLocal.hpp>
+	<SFML/System/ThreadLocalPtr.hpp>
+	<SFML/System/Time.hpp>
+	<SFML/System/Utf.hpp>
+	<SFML/System/Vector2.hpp>
+	<SFML/System/Vector3.hpp>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/Config.hpp
+	"TargetConditionals.h"
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Clock.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/Time.hpp>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Export.hpp
+	<SFML/Config.hpp>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Time.hpp
+	<SFML/System/Export.hpp>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Err.hpp
+	<SFML/System/Export.hpp>
+	<ostream>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/FileInputStream.hpp
+	<SFML/Config.hpp>
+	<SFML/System/Export.hpp>
+	<SFML/System/InputStream.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<cstdio>
+	<string>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/InputStream.hpp
+	<SFML/Config.hpp>
+	<SFML/System/Export.hpp>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/NonCopyable.hpp
+	<SFML/System/Export.hpp>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Lock.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/NonCopyable.hpp>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/MemoryInputStream.hpp
+	<SFML/Config.hpp>
+	<SFML/System/InputStream.hpp>
+	<SFML/System/Export.hpp>
+	<cstdlib>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Mutex.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/NonCopyable.hpp>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Sleep.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/Time.hpp>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/String.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/Utf.hpp>
+	<iterator>
+	<locale>
+	<string>
+	<SFML/System/String.inl>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Utf.hpp
+	<SFML/Config.hpp>
+	<algorithm>
+	<locale>
+	<string>
+	<cstdlib>
+	<SFML/System/Utf.inl>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Utf.inl
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/String.inl
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Thread.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<cstdlib>
+	<SFML/System/Thread.inl>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Thread.inl
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/ThreadLocal.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<cstdlib>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/ThreadLocalPtr.hpp
+	<SFML/System/ThreadLocal.hpp>
+	<SFML/System/ThreadLocalPtr.inl>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/ThreadLocalPtr.inl
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Vector2.hpp
+	<SFML/System/Vector2.inl>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Vector2.inl
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Vector3.hpp
+	<SFML/System/Vector3.inl>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Vector3.inl
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/Ftp.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/Network/TcpSocket.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<SFML/System/Time.hpp>
+	<string>
+	<vector>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/Export.hpp
+	<SFML/Config.hpp>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/TcpSocket.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/Network/Socket.hpp>
+	<SFML/System/Time.hpp>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/Socket.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/Network/SocketHandle.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<vector>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/SocketHandle.hpp
+	<SFML/Config.hpp>
+	<basetsd.h>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/Http.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/Network/IpAddress.hpp>
+	<SFML/Network/TcpSocket.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<SFML/System/Time.hpp>
+	<map>
+	<string>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/IpAddress.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/System/Time.hpp>
+	<istream>
+	<ostream>
+	<string>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/Packet.hpp
+	<SFML/Network/Export.hpp>
+	<string>
+	<vector>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/SocketSelector.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/System/Time.hpp>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/TcpListener.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/Network/Socket.hpp>
+	<SFML/Network/IpAddress.hpp>
+
+1525729174 /home/toni/Downloads/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/UdpSocket.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/Network/Socket.hpp>
+	<SFML/Network/IpAddress.hpp>
+	<vector>
+
+1546007630 source:/home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/Practica2.2_Server/main.cpp
+	<iostream>
+	<unistd.h>
+	<SFML/Network.hpp>
+	<thread>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network.hpp
+	<SFML/System.hpp>
+	<SFML/Network/Ftp.hpp>
+	<SFML/Network/Http.hpp>
+	<SFML/Network/IpAddress.hpp>
+	<SFML/Network/Packet.hpp>
+	<SFML/Network/Socket.hpp>
+	<SFML/Network/SocketHandle.hpp>
+	<SFML/Network/SocketSelector.hpp>
+	<SFML/Network/TcpListener.hpp>
+	<SFML/Network/TcpSocket.hpp>
+	<SFML/Network/UdpSocket.hpp>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System.hpp
+	<SFML/Config.hpp>
+	<SFML/System/Clock.hpp>
+	<SFML/System/Err.hpp>
+	<SFML/System/FileInputStream.hpp>
+	<SFML/System/InputStream.hpp>
+	<SFML/System/Lock.hpp>
+	<SFML/System/MemoryInputStream.hpp>
+	<SFML/System/Mutex.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<SFML/System/Sleep.hpp>
+	<SFML/System/String.hpp>
+	<SFML/System/Thread.hpp>
+	<SFML/System/ThreadLocal.hpp>
+	<SFML/System/ThreadLocalPtr.hpp>
+	<SFML/System/Time.hpp>
+	<SFML/System/Utf.hpp>
+	<SFML/System/Vector2.hpp>
+	<SFML/System/Vector3.hpp>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Config.hpp
+	"TargetConditionals.h"
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Clock.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/Time.hpp>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Export.hpp
+	<SFML/Config.hpp>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Time.hpp
+	<SFML/System/Export.hpp>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Err.hpp
+	<SFML/System/Export.hpp>
+	<ostream>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/FileInputStream.hpp
+	<SFML/Config.hpp>
+	<SFML/System/Export.hpp>
+	<SFML/System/InputStream.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<cstdio>
+	<string>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/InputStream.hpp
+	<SFML/Config.hpp>
+	<SFML/System/Export.hpp>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/NonCopyable.hpp
+	<SFML/System/Export.hpp>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Lock.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/NonCopyable.hpp>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/MemoryInputStream.hpp
+	<SFML/Config.hpp>
+	<SFML/System/InputStream.hpp>
+	<SFML/System/Export.hpp>
+	<cstdlib>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Mutex.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/NonCopyable.hpp>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Sleep.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/Time.hpp>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/String.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/Utf.hpp>
+	<iterator>
+	<locale>
+	<string>
+	<SFML/System/String.inl>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Utf.hpp
+	<SFML/Config.hpp>
+	<algorithm>
+	<locale>
+	<string>
+	<cstdlib>
+	<SFML/System/Utf.inl>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Utf.inl
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/String.inl
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Thread.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<cstdlib>
+	<SFML/System/Thread.inl>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Thread.inl
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/ThreadLocal.hpp
+	<SFML/System/Export.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<cstdlib>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/ThreadLocalPtr.hpp
+	<SFML/System/ThreadLocal.hpp>
+	<SFML/System/ThreadLocalPtr.inl>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/ThreadLocalPtr.inl
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Vector2.hpp
+	<SFML/System/Vector2.inl>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Vector2.inl
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Vector3.hpp
+	<SFML/System/Vector3.inl>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Vector3.inl
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/Ftp.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/Network/TcpSocket.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<SFML/System/Time.hpp>
+	<string>
+	<vector>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/Export.hpp
+	<SFML/Config.hpp>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/TcpSocket.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/Network/Socket.hpp>
+	<SFML/System/Time.hpp>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/Socket.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/Network/SocketHandle.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<vector>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/SocketHandle.hpp
+	<SFML/Config.hpp>
+	<basetsd.h>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/Http.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/Network/IpAddress.hpp>
+	<SFML/Network/TcpSocket.hpp>
+	<SFML/System/NonCopyable.hpp>
+	<SFML/System/Time.hpp>
+	<map>
+	<string>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/IpAddress.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/System/Time.hpp>
+	<istream>
+	<ostream>
+	<string>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/Packet.hpp
+	<SFML/Network/Export.hpp>
+	<string>
+	<vector>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/SocketSelector.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/System/Time.hpp>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/TcpListener.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/Network/Socket.hpp>
+	<SFML/Network/IpAddress.hpp>
+
+1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/UdpSocket.hpp
+	<SFML/Network/Export.hpp>
+	<SFML/Network/Socket.hpp>
+	<SFML/Network/IpAddress.hpp>
+	<vector>
+

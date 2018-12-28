@@ -6,9 +6,23 @@
 #include <jdbc/cppconn/statement.h>
 #include <iostream>
 #include <vector>
-
+void receive(sf::TcpSocket* socket){
+    std::size_t received;
+    while(true){
+        char* data = new char[100];
+        if(socket->receive(data, 100, received)!=sf::Socket::Done){
+            std::cout<<"el cliente se ha desconectado"<<std::endl;
+            break;
+        }
+        std::cout<<data<<std::endl;
+        if(data=="exit"){
+            std::cout<<"connexion finalizada correctamente"<<std::endl;
+            break;
+        }
+    }
+}
 void connection(sf::TcpSocket* socket){
-
+    std::cout<<socket->isBlocking()<<std::endl;
     ///Se inicializa la conexión a la BD PracticaRedesAA4
     sql::Driver* driver = sql::mysql::get_driver_instance();
     sql::Connection* conn = driver->connect("tcp://127.0.0.1","root","linux123");
@@ -17,13 +31,24 @@ void connection(sf::TcpSocket* socket){
     sql::Statement* stmt =conn->createStatement();
     sql::ResultSet* resultSet;
 
-    sf::Packet packet;
-    std::string username, password;
+
+    std::string username, password, test;
     bool validName = false;
     do{
+        sf::Packet packet;
+        std::cout<<"esperando packet"<<std::endl;
+        if(socket->receive(packet)!=sf::Socket::Done)
+        {
+            std::cout<<"el cliente se ha desconectado"<<std::endl;
+            break;
+        }
+        else
+        {
+            packet>>username>>password;
+            std::cout<<"packet recibido"<<std::endl;
+            std::cout<<username<<"  "<<password<<std::endl;
+        }
 
-        socket->receive(packet);
-        packet>>username>>password;
 
         if(username!="nuevo")
         {
