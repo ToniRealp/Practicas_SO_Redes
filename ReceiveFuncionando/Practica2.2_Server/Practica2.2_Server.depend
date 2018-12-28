@@ -399,11 +399,16 @@
 	<SFML/Network/IpAddress.hpp>
 	<vector>
 
-1546007630 source:/home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/Practica2.2_Server/main.cpp
+1546023198 source:/home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/Practica2.2_Server/main.cpp
 	<iostream>
 	<unistd.h>
-	<SFML/Network.hpp>
 	<thread>
+	<SFML/Network.hpp>
+	<vector>
+	<jdbc/mysql_connection.h>
+	<jdbc/mysql_driver.h>
+	<jdbc/cppconn/resultset.h>
+	<jdbc/cppconn/statement.h>
 
 1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network.hpp
 	<SFML/System.hpp>
@@ -598,4 +603,78 @@
 	<SFML/Network/Socket.hpp>
 	<SFML/Network/IpAddress.hpp>
 	<vector>
+
+1537897368 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/mysqlConnector/include/jdbc/mysql_connection.h
+	"cppconn/connection.h"
+	<boost/shared_ptr.hpp>
+	<boost/scoped_ptr.hpp>
+
+1537897368 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/mysqlConnector/include/jdbc/cppconn/connection.h
+	<map>
+	"build_config.h"
+	"warning.h"
+	"sqlstring.h"
+	"variant.h"
+
+1537897368 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/mysqlConnector/include/jdbc/cppconn/build_config.h
+
+1537897368 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/mysqlConnector/include/jdbc/cppconn/warning.h
+	<stdexcept>
+	<string>
+	<memory>
+	"sqlstring.h"
+
+1537897368 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/mysqlConnector/include/jdbc/cppconn/sqlstring.h
+	<string>
+	<algorithm>
+	"build_config.h"
+	<iostream>
+
+1537897368 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/mysqlConnector/include/jdbc/cppconn/variant.h
+	<string>
+	<map>
+	<list>
+	<algorithm>
+	<typeinfo>
+	"build_config.h"
+	"sqlstring.h"
+	"exception.h"
+
+1537897368 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/mysqlConnector/include/jdbc/cppconn/exception.h
+	"build_config.h"
+	<stdexcept>
+	<string>
+	<memory>
+
+1537897368 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/mysqlConnector/include/jdbc/mysql_driver.h
+	"cppconn/driver.h"
+	<boost/scoped_ptr.hpp>
+
+1537897368 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/mysqlConnector/include/jdbc/cppconn/driver.h
+	"connection.h"
+	"build_config.h"
+
+1537897368 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/mysqlConnector/include/jdbc/cppconn/resultset.h
+	"config.h"
+	<list>
+	<map>
+	<iostream>
+	"sqlstring.h"
+	"resultset_metadata.h"
+
+1537897368 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/mysqlConnector/include/jdbc/cppconn/config.h
+	<stdint.h>
+	<inttypes.h>
+	<stdint.h>
+
+1537897368 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/mysqlConnector/include/jdbc/cppconn/resultset_metadata.h
+	"sqlstring.h"
+	"datatype.h"
+
+1537897368 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/mysqlConnector/include/jdbc/cppconn/datatype.h
+
+1537897368 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/mysqlConnector/include/jdbc/cppconn/statement.h
+	"config.h"
+	"resultset.h"
+	<string>
 

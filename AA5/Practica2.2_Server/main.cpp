@@ -6,6 +6,7 @@
 #include <jdbc/cppconn/statement.h>
 #include <iostream>
 #include <vector>
+#include <thread>
 void receive(sf::TcpSocket* socket){
     std::size_t received;
     while(true){
@@ -62,9 +63,9 @@ void connection(sf::TcpSocket* socket){
             {
                 validName=false;
             }
-
-             packet<<validName;
-             socket->send(packet);
+            packet.clear();
+            packet<<validName;
+            socket->send(packet);
         }
 
     }while(validName);
@@ -92,8 +93,8 @@ int main()
         else{
             std::cout<<"Conectado"<<std::endl;
             sockets.push_back(incoming);
-            sf::Thread conn(&connection, incoming);
-            conn.launch();
+            std::thread conn(&connection, incoming);
+            conn.detach();
         }
     }
     dispatcher.close();
