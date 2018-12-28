@@ -399,13 +399,13 @@
 	<SFML/Network/IpAddress.hpp>
 	<vector>
 
-1546007630 source:/home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/Practica2.2_Client/main.cpp
+1546022378 source:/home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/Practica2.2_Client/main.cpp
 	<iostream>
 	<unistd.h>
 	<SFML/Network.hpp>
 	<thread>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network.hpp
 	<SFML/System.hpp>
 	<SFML/Network/Ftp.hpp>
 	<SFML/Network/Http.hpp>
@@ -418,7 +418,7 @@
 	<SFML/Network/TcpSocket.hpp>
 	<SFML/Network/UdpSocket.hpp>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System.hpp
 	<SFML/Config.hpp>
 	<SFML/System/Clock.hpp>
 	<SFML/System/Err.hpp>
@@ -438,24 +438,24 @@
 	<SFML/System/Vector2.hpp>
 	<SFML/System/Vector3.hpp>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Config.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Config.hpp
 	"TargetConditionals.h"
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Clock.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Clock.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/Time.hpp>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Export.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Export.hpp
 	<SFML/Config.hpp>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Time.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Time.hpp
 	<SFML/System/Export.hpp>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Err.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Err.hpp
 	<SFML/System/Export.hpp>
 	<ostream>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/FileInputStream.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/FileInputStream.hpp
 	<SFML/Config.hpp>
 	<SFML/System/Export.hpp>
 	<SFML/System/InputStream.hpp>
@@ -463,32 +463,32 @@
 	<cstdio>
 	<string>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/InputStream.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/InputStream.hpp
 	<SFML/Config.hpp>
 	<SFML/System/Export.hpp>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/NonCopyable.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/NonCopyable.hpp
 	<SFML/System/Export.hpp>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Lock.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Lock.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/NonCopyable.hpp>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/MemoryInputStream.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/MemoryInputStream.hpp
 	<SFML/Config.hpp>
 	<SFML/System/InputStream.hpp>
 	<SFML/System/Export.hpp>
 	<cstdlib>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Mutex.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Mutex.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/NonCopyable.hpp>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Sleep.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Sleep.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/Time.hpp>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/String.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/String.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/Utf.hpp>
 	<iterator>
@@ -496,7 +496,7 @@
 	<string>
 	<SFML/System/String.inl>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Utf.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Utf.hpp
 	<SFML/Config.hpp>
 	<algorithm>
 	<locale>
@@ -504,40 +504,40 @@
 	<cstdlib>
 	<SFML/System/Utf.inl>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Utf.inl
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Utf.inl
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/String.inl
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/String.inl
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Thread.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Thread.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/NonCopyable.hpp>
 	<cstdlib>
 	<SFML/System/Thread.inl>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Thread.inl
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Thread.inl
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/ThreadLocal.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/ThreadLocal.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/NonCopyable.hpp>
 	<cstdlib>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/ThreadLocalPtr.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/ThreadLocalPtr.hpp
 	<SFML/System/ThreadLocal.hpp>
 	<SFML/System/ThreadLocalPtr.inl>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/ThreadLocalPtr.inl
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/ThreadLocalPtr.inl
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Vector2.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Vector2.hpp
 	<SFML/System/Vector2.inl>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Vector2.inl
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Vector2.inl
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Vector3.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Vector3.hpp
 	<SFML/System/Vector3.inl>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Vector3.inl
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/System/Vector3.inl
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/Ftp.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/Ftp.hpp
 	<SFML/Network/Export.hpp>
 	<SFML/Network/TcpSocket.hpp>
 	<SFML/System/NonCopyable.hpp>
@@ -545,25 +545,25 @@
 	<string>
 	<vector>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/Export.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/Export.hpp
 	<SFML/Config.hpp>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/TcpSocket.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/TcpSocket.hpp
 	<SFML/Network/Export.hpp>
 	<SFML/Network/Socket.hpp>
 	<SFML/System/Time.hpp>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/Socket.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/Socket.hpp
 	<SFML/Network/Export.hpp>
 	<SFML/Network/SocketHandle.hpp>
 	<SFML/System/NonCopyable.hpp>
 	<vector>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/SocketHandle.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/SocketHandle.hpp
 	<SFML/Config.hpp>
 	<basetsd.h>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/Http.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/Http.hpp
 	<SFML/Network/Export.hpp>
 	<SFML/Network/IpAddress.hpp>
 	<SFML/Network/TcpSocket.hpp>
@@ -572,28 +572,28 @@
 	<map>
 	<string>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/IpAddress.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/IpAddress.hpp
 	<SFML/Network/Export.hpp>
 	<SFML/System/Time.hpp>
 	<istream>
 	<ostream>
 	<string>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/Packet.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/Packet.hpp
 	<SFML/Network/Export.hpp>
 	<string>
 	<vector>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/SocketSelector.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/SocketSelector.hpp
 	<SFML/Network/Export.hpp>
 	<SFML/System/Time.hpp>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/TcpListener.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/TcpListener.hpp
 	<SFML/Network/Export.hpp>
 	<SFML/Network/Socket.hpp>
 	<SFML/Network/IpAddress.hpp>
 
-1525729174 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/UdpSocket.hpp
+1546019500 /home/toni/Documents/Practicas_SO_Redes/ReceiveFuncionando/SFML-2.5.0/include/SFML/Network/UdpSocket.hpp
 	<SFML/Network/Export.hpp>
 	<SFML/Network/Socket.hpp>
 	<SFML/Network/IpAddress.hpp>
