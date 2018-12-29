@@ -3,9 +3,13 @@
 #include <SFML/Network.hpp>
 #include <thread>
 
+enum ID {LOGIN, SIGNUP};
+
 void send(sf::TcpSocket* socket){
 
     bool validName = false;
+    int coins;
+    std::vector<std::string> pokemonNames;
 
     std::string username, password;
     do{
@@ -15,17 +19,54 @@ void send(sf::TcpSocket* socket){
         std::cout<<"Username:"<<std::endl;
         std::cin>>username;
         if(username=="nuevo"){
-            packet << username;
+             ///Sign in
+			//Se pregunta el Username
+            std::cout<<"New Username:"<<std::endl;
+            std::cin>>username;
+			//Se comprueba que no exista otro jugador con ese mismo Username
+            bool pwdMatch = false;
+                do{
+					///Asignación de la contraseña
+					//Se pregunta la contraseña
+                    std::string confirmPassword;
+                    std::cout<< "New Password:"<<std::endl;
+                    std::cin>>password;
+					//Confirmación de la contraseña
+                    std::cout<< "Confirm Password:"<<std::endl;
+                    std::cin>>confirmPassword;
+					//Si las dos contraseñas coinciden se crea un nuevo jugador con ese Username y esa Password con 0 monedas. Si no coinciden se vuelven a preguntar las contraseñas
+                    if(password==confirmPassword){
+                        pwdMatch=true;
+                    }
+                }while(!pwdMatch);
+                packet << SIGNUP <<username<<password;
         }else{
             std::cout<<"Contraseña:"<<std::endl;
             std::cin>>password;
-            packet << username << password;
+            packet << LOGIN << username << password;
         }
 
-        socket->send(packet);
+        if(socket->send(packet)!= sf::Socket::Status::Done){
+            std::cout<<"Server unreachable"<<std::endl;
+            break;
+        }
+
         socket->receive(packet);
         packet>>validName;
-        std::cout<<validName;
+
+        if(!validName)
+            std::cout<<"Los datos introducidos son icorrectos"<<std::endl;
+        else{
+            int pokemonNumber;
+            packet>>coins>>pokemonNumber;
+            for(;pokemonNumber>0;pokemonNumber--){
+                std::string pokemon;
+                packet>>pokemon;
+                std::cout<<pokemon<<std::endl;
+                pokemonNames.push_back(pokemon);
+            }
+        }
+
     }while(!validName);
 }
 
