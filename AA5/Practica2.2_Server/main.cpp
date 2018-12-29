@@ -7,23 +7,12 @@
 #include <iostream>
 #include <vector>
 #include <thread>
-void receive(sf::TcpSocket* socket){
-    std::size_t received;
-    while(true){
-        char* data = new char[100];
-        if(socket->receive(data, 100, received)!=sf::Socket::Done){
-            std::cout<<"el cliente se ha desconectado"<<std::endl;
-            break;
-        }
-        std::cout<<data<<std::endl;
-        if(data=="exit"){
-            std::cout<<"connexion finalizada correctamente"<<std::endl;
-            break;
-        }
-    }
-}
+
+enum ID {LOGIN,SIGNUP,MAPS};
+
+
 void connection(sf::TcpSocket* socket){
-    std::cout<<socket->isBlocking()<<std::endl;
+
     ///Se inicializa la conexión a la BD PracticaRedesAA4
     sql::Driver* driver = sql::mysql::get_driver_instance();
     sql::Connection* conn = driver->connect("tcp://127.0.0.1","root","linux123");
@@ -32,11 +21,15 @@ void connection(sf::TcpSocket* socket){
     sql::Statement* stmt =conn->createStatement();
     sql::ResultSet* resultSet;
 
+    std::string username, password, playerID;
+    int id, coins;
 
-    std::string username, password, test;
+    sf::Packet packet;
+
     bool validName = false;
     do{
-        sf::Packet packet;
+        packet.clear();
+
         std::cout<<"esperando username"<<std::endl;
         if(socket->receive(packet)!=sf::Socket::Done)
         {
@@ -45,33 +38,92 @@ void connection(sf::TcpSocket* socket){
         }
         else
         {
-            packet>>username>>password;
+            packet>>id>>username>>password;
             std::cout<<"datos de login: "<<username<<" "<<password<<std::endl;
         }
 
+        resultSet = stmt->executeQuery("SELECT * FROM Player WHERE Player.Username = '"+ username + "'" "AND Player.Password = '"+ password + "'");
+            //Si existe algun usuario con esa combinación de Username y Password se inicia sesión en esa cuenta
 
-        if(username!="nuevo")
+        std::vector<std::string>pokemonNames;
+        int pokemonCounter=0;
+
+        if(resultSet->next())
         {
-            resultSet = stmt->executeQuery("SELECT * FROM Player WHERE Player.Username = '"+ username + "'" "AND Player.Password = '"+ password + "'");
-                //Si existe algun usuario con esa combinación de Username y Password se inicia sesión en esa cuenta
-            if(resultSet->next())
-            {
+            if(id==LOGIN){
                 validName=true;
+                playerID = resultSet->getString("ID");
+                coins=resultSet->getInt("Coins");
+                resultSet = stmt->executeQuery("SELECT * FROM Pokemons WHERE ID IN (SELECT PokemonID FROM PokemonXplayer WHERE PlayerID ="+playerID+")");
+
+                if(resultSet->next()){
+
+                    do{
+                        pokemonCounter++;
+                        pokemonNames.push_back(resultSet->getString("Name"));
+
+                    }while(resultSet->next());
+                }
             }
-            else
-            {
-                validName=false;
+        }
+        else
+        {
+            if(id==SIGNUP){
+                validName=true;
+                stmt->executeUpdate("INSERT INTO Player(Player.Username, Player.Password, Player.Coins) VALUES ('"+username+"','"+password+"', 0)");
+                resultSet = stmt->executeQuery("SELECT * FROM Player WHERE Player.Username = '"+ username + "'" "AND Player.Password = '"+ password + "'");
+                if(resultSet->next())
+                     playerID = resultSet->getString("ID");
+                coins = 0;
             }
-            packet.clear();
-            packet<<validName;
-            if(socket->send(packet)!= sf::Socket::Done)
-            {
-                std::cout<<"cliente se ha desconectado"<<std::endl;
+        }
+        packet.clear();
+        packet<<validName;
+        if(validName){
+            packet<<coins<<pokemonCounter;
+        }
+
+        for(auto x: pokemonNames)
+            packet<<x;
+
+        if(socket->send(packet)!= sf::Socket::Done)
+        {
+            std::cout<<"cliente se ha desconectado"<<std::endl;
+            break;
+        }
+
+    }while(!validName);
+
+	//Se accede a la BD para sacar la información de los mapas, que son printeados en pantalla (nombre y descripción)
+    packet.clear();
+    std::string mapName;
+
+    resultSet = stmt->executeQuery("SELECT * FROM Mapas");
+    packet<<MAPS;
+
+    while(resultSet->next()){
+             packet<<resultSet->getString("Name") << resultSet->getString("Description");
+        }
+    socket->send(packet);
+	//Se pregunta al usuario que mapa quiere jugar. Debe escribir el nombre del mapa
+    bool mapSelected = false;
+    do {
+        if(socket->receive(packet)!=sf::Socket::Status::Done){
+            std::cout<<"el cliente se ha desconectado"<<std::endl;
+            break;
+        }
+        packet >> mapName;
+        resultSet->beforeFirst();
+        while(resultSet->next()){
+			//Se comprueba que el mapa escrito exista en la BD
+            if(mapName==resultSet->getString("Name")){
+                mapSelected = true;
+                packet<<"Map "<<mapName<<" selected";
+                //logInSec = time(0);
                 break;
             }
         }
-
-    }while(validName);
+    }while(!mapSelected);
 }
 
 int main()
