@@ -10,12 +10,14 @@ void send(sf::TcpSocket* socket){
     bool validName = false;
     int coins;
     std::vector<std::string> pokemonNames;
+    sf::Packet packet;
 
     std::string username, password;
     do{
 		///Login / Sign In
 		//Se pregunta el Username
-        sf::Packet packet;
+        packet.clear();
+
         std::cout<<"Username:"<<std::endl;
         std::cin>>username;
         if(username=="nuevo"){
@@ -68,6 +70,32 @@ void send(sf::TcpSocket* socket){
         }
 
     }while(!validName);
+
+    int id;
+    int numMapas;
+    socket->receive(packet);
+    packet>>id >> numMapas;
+
+    for(;numMapas>0;numMapas--)
+    {
+        std::string nombre;
+        std::string descripcion;
+        packet>>nombre>>descripcion;
+        std::cout<<nombre<<":     "<<descripcion<<std::endl<<std::endl<<std::endl<<std::endl;
+    }
+
+    bool mapSelected = false;
+    do{
+        std::cout<<"Introduce el nombre del mapa al que desees jugar:"<<std::endl;
+        std::string mapName;
+        std::cin>>mapName;
+        packet.clear();
+        packet<<mapName;
+        socket->send(packet);
+        socket->receive(packet);
+        packet>>mapSelected;
+
+    }while(!mapSelected);
 }
 
 std::string receive(sf::TcpSocket* socket){
