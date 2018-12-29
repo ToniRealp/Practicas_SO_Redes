@@ -37,7 +37,7 @@ void connection(sf::TcpSocket* socket){
     bool validName = false;
     do{
         sf::Packet packet;
-        std::cout<<"esperando packet"<<std::endl;
+        std::cout<<"esperando username"<<std::endl;
         if(socket->receive(packet)!=sf::Socket::Done)
         {
             std::cout<<"el cliente se ha desconectado"<<std::endl;
@@ -46,8 +46,7 @@ void connection(sf::TcpSocket* socket){
         else
         {
             packet>>username>>password;
-            std::cout<<"packet recibido"<<std::endl;
-            std::cout<<username<<"  "<<password<<std::endl;
+            std::cout<<"datos de login: "<<username<<" "<<password<<std::endl;
         }
 
 
@@ -65,7 +64,11 @@ void connection(sf::TcpSocket* socket){
             }
             packet.clear();
             packet<<validName;
-            socket->send(packet);
+            if(socket->send(packet)!= sf::Socket::Done)
+            {
+                std::cout<<"cliente se ha desconectado"<<std::endl;
+                break;
+            }
         }
 
     }while(validName);
