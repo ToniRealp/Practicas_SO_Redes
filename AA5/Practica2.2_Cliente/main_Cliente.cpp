@@ -156,6 +156,7 @@ void DibujaSFML(sf::TcpSocket *socket, std::string structure)
 
     sf::RenderWindow window(sf::VideoMode(640,640), "Interfaz cuadraditos");
     std::vector<std::vector<GameObject>> grid(GameObject::NONE);
+    std::vector<sf::Vector2f> spawns;
     grid.resize(20,std::vector<GameObject>(20));
 
     for (int i =0; i<20; i++)
@@ -173,10 +174,20 @@ void DibujaSFML(sf::TcpSocket *socket, std::string structure)
                 position.y = i;
             }
             else if(structure[i*20+j]=='S'){
+                spawns.push_back(sf::Vector2f(i,j));
                 grid[i][j]=GameObject::POKEMON;
             }
         }
     }
+
+    for(int i = 0; i < spawns.size(); i++)
+        std::cout << spawns[i].x << " - " << spawns[i].y << std::endl;
+
+    sf::Packet packet;
+    int numberOfSpawns = spawns.size();
+    packet<<numberOfSpawns;
+    socket->send(packet);
+    std::cout << numberOfSpawns << std::endl;
 
     while(window.isOpen())
     {
@@ -186,7 +197,7 @@ void DibujaSFML(sf::TcpSocket *socket, std::string structure)
         {
             if(event.type == sf::Event::Closed){
                 window.close();
-                sf::Packet packet;
+                packet.clear();
                 packet<<DISCONNECT;
                 socket->send(packet);
             }
