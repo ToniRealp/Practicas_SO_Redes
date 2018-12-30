@@ -101,6 +101,7 @@ void connection(sf::TcpSocket* socket){
 	//Se accede a la BD para sacar la información de los mapas, que son printeados en pantalla (nombre y descripción)
     packet.clear();
     std::string mapName;
+    std::string mapStructure;
     int numMapas;
 
     resultSet = stmt->executeQuery("SELECT COUNT(*) FROM Mapas");
@@ -125,19 +126,22 @@ void connection(sf::TcpSocket* socket){
         resultSet->beforeFirst();
         while(resultSet->next()){
 			//Se comprueba que el mapa escrito exista en la BD
-            if(mapName==resultSet->getString("Name")){
-                mapSelected = true;
-                packet.clear();
+            if(mapName==resultSet->getString("Name"))
+            {
+                mapStructure = resultSet->getString("Structure");
                 mapSelected=true;
                 logInSec = time(0);
                 break;
             }
         }
 
-        packet<<mapSelected;
+        packet.clear();
+        packet<<mapSelected<<mapStructure;
         socket->send(packet);
 
     }while(!mapSelected);
+
+
 
     socket->receive(packet);
     packet>>id;
@@ -158,6 +162,7 @@ void connection(sf::TcpSocket* socket){
         std::string logInStr(logInBuf);
 
         time_t logOutSec = time(0);
+
         logOutTime=localtime(&logOutSec);
         strftime(logOutBuf,22,"%F %X\0",logOutTime);
         std::string logOutStr(logOutBuf);
