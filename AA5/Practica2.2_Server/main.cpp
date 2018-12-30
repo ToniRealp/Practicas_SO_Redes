@@ -46,16 +46,20 @@ void connection(sf::TcpSocket* socket){
             std::cout<<"datos de login: "<<username<<" "<<password<<std::endl;
         }
 
-        resultSet = stmt->executeQuery("SELECT * FROM Player WHERE Player.Username = '"+ username + "'" "AND Player.Password = '"+ password + "'");
+
+        //resultSet = stmt->executeQuery("SELECT * FROM Player WHERE Player.Username = '"+ username + "'" "AND Player.Password = '"+ password + "'");
             //Si existe algun usuario con esa combinación de Username y Password se inicia sesión en esa cuenta
 
         std::vector<std::string>pokemonNames;
         int pokemonCounter=0;
 
-        if(resultSet->next())
+        if(id==LOGIN)
         {
-            if(id==LOGIN){
+            resultSet = stmt->executeQuery("SELECT * FROM Player WHERE Player.Username = '"+ username + "'" "AND Player.Password = '"+ password + "'");
+            if(resultSet->next())
+            {
                 validName=true;
+
                 playerID = resultSet->getString("ID");
                 coins=resultSet->getInt("Coins");
                 resultSet = stmt->executeQuery("SELECT * FROM Pokemons WHERE ID IN (SELECT PokemonID FROM PokemonXplayer WHERE PlayerID ="+playerID+")");
@@ -70,9 +74,12 @@ void connection(sf::TcpSocket* socket){
                 }
             }
         }
-        else
+        else if(id==SIGNUP)
         {
-            if(id==SIGNUP){
+            resultSet = stmt->executeQuery("SELECT * FROM Player WHERE Player.Username = '"+ username + "'");
+
+            if(!resultSet->next())
+            {
                 validName=true;
                 stmt->executeUpdate("INSERT INTO Player(Player.Username, Player.Password, Player.Coins) VALUES ('"+username+"','"+password+"', 0)");
                 resultSet = stmt->executeQuery("SELECT * FROM Player WHERE Player.Username = '"+ username + "'" "AND Player.Password = '"+ password + "'");
@@ -128,6 +135,7 @@ void connection(sf::TcpSocket* socket){
 			//Se comprueba que el mapa escrito exista en la BD
             if(mapName==resultSet->getString("Name"))
             {
+                std::cout << "Exists" << std::endl;
                 mapStructure = resultSet->getString("Structure");
                 mapSelected=true;
                 logInSec = time(0);
