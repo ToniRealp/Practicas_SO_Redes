@@ -149,6 +149,10 @@ void connection(sf::TcpSocket* socket){
 
     }while(!mapSelected);
 
+    int numberOfSpawns;
+    socket->receive(packet);
+    packet>>numberOfSpawns;
+    std::cout << numberOfSpawns << std::endl;
 
 
     socket->receive(packet);
