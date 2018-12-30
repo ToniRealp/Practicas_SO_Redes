@@ -12,19 +12,13 @@
 
 
 #define MAX 100
-#define SIZE_TABLERO 64
-#define SIZE_FILA_TABLERO 8
-#define LADO_CASILLA 64
-#define RADIO_AVATAR 25.f
+#define LADO_CASILLA 32
+#define RADIO_AVATAR 12.5f
 #define OFFSET_AVATAR 5
 
-#define SIZE_TABLERO 64
-#define LADO_CASILLA 64
-#define RADIO_AVATAR 25.f
-#define OFFSET_AVATAR 5
+void DibujaSFML(sf::TcpSocket*, std::string);
 
-void DibujaSFML(sf::TcpSocket*);
-
+enum GameObject {NONE, OBSTACLE, PLAYER, POKEMON};
 enum ID {LOGIN, SIGNUP, MAPS, DISCONNECT};
 
 int main(){
@@ -127,7 +121,11 @@ int main(){
 
     }while(!mapSelected);
 
-    DibujaSFML(socket);
+    std::string structure;
+    packet>>structure;
+    std::cout << structure << std::endl;
+
+    DibujaSFML(socket, structure);
 
     socket->disconnect();
 }
@@ -144,10 +142,27 @@ sf::Vector2f BoardToWindows(sf::Vector2f _position)
     return sf::Vector2f(_position.x*LADO_CASILLA+OFFSET_AVATAR, _position.y*LADO_CASILLA+OFFSET_AVATAR);
 }
 
-void DibujaSFML(sf::TcpSocket *socket)
+void DibujaSFML(sf::TcpSocket *socket, std::string structure)
 {
-    sf::Vector2f posicion(4.f, 4.f);
-    sf::RenderWindow window(sf::VideoMode(512,512), "Interfaz cuadraditos");
+    sf::RenderWindow window(sf::VideoMode(640,640), "Interfaz cuadraditos");
+    std::vector<std::vector<GameObject>> grid(GameObject::NONE);
+    grid.resize(20,std::vector<GameObject>(20));
+
+    for (int i =0; i<20; i++)
+    {
+        for(int j = 0; j<20; j++)
+        {
+            sf::RectangleShape rectBlanco(sf::Vector2f(LADO_CASILLA,LADO_CASILLA));
+            rectBlanco.setFillColor(sf::Color::White);
+            if (structure[i*20+j]=='O'){
+                    grid[i][j]=GameObject::OBSTACLE;
+            }
+            else if (structure[i*20+j]=='I'){
+                grid[i][j]=GameObject::PLAYER;
+            }
+        }
+    }
+
     while(window.isOpen())
     {
         sf::Event event;
@@ -170,19 +185,19 @@ void DibujaSFML(sf::TcpSocket *socket)
                     }
                     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
                     {
-                        posicion.x--;
+
                     }
                     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
                     {
-                        posicion.x++;
+
                     }
                     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
                     {
-                        posicion.y--;
+
                     }
                     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
                     {
-                        posicion.y++;
+
                     }
                     break;
                 default:
@@ -195,39 +210,27 @@ void DibujaSFML(sf::TcpSocket *socket)
 
         //A partir de aquí es para pintar por pantalla
         //Este FOR es para el mapa --> Esto es para pintar casillas estilo tablero de ajedrez
-        for (int i =0; i<8; i++)
+        for (int i =0; i<20; i++)
         {
-            for(int j = 0; j<8; j++)
+            for(int j = 0; j<20; j++)
             {
                 sf::RectangleShape rectBlanco(sf::Vector2f(LADO_CASILLA,LADO_CASILLA));
                 rectBlanco.setFillColor(sf::Color::White);
-                if(i%2 == 0)
-                {
-                    //Empieza por el blanco
-                    if (j%2 == 0)
-                    {
-                        rectBlanco.setPosition(sf::Vector2f(i*LADO_CASILLA, j*LADO_CASILLA));
+                if (grid[i][j]==GameObject::OBSTACLE){
+                        rectBlanco.setPosition(sf::Vector2f(j*LADO_CASILLA, i*LADO_CASILLA));
                         window.draw(rectBlanco);
-                    }
                 }
-                else
-                {
-                    //Empieza por el negro
-                    if (j%2 == 1)
-                    {
-                        rectBlanco.setPosition(sf::Vector2f(i*LADO_CASILLA, j*LADO_CASILLA));
-                        window.draw(rectBlanco);
-                    }
+                else if (grid[i][j]==GameObject::PLAYER){
+                    sf::CircleShape shape(RADIO_AVATAR);
+                    shape.setFillColor(sf::Color::Blue);
+                    sf::Vector2f posicionDibujar = BoardToWindows(sf::Vector2f(j,i));
+                    shape.setPosition(posicionDibujar);
+                    window.draw(shape);
                 }
             }
         }
 
         //TODO: Para pintar un círculo que podría simular el personaje
-        sf::CircleShape shape(RADIO_AVATAR);
-        shape.setFillColor(sf::Color::Blue);
-        sf::Vector2f posicionDibujar = BoardToWindows(posicion);
-        shape.setPosition(posicionDibujar);
-        window.draw(shape);
         window.display();
     }
 
