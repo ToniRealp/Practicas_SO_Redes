@@ -23,14 +23,14 @@ enum ID {LOGIN, SIGNUP, MAPS, DISCONNECT};
 
 int main(){
     sf::TcpSocket* socket = new sf::TcpSocket;
-    sf::Socket::Status status = socket->connect("79.154.246.236", 50000, sf::seconds(5.f));
+    sf::Socket::Status status = socket->connect("192.168.1.67", 50000, sf::seconds(5.f));
 
     if (status != sf::Socket::Done)
     {
       std::cout<<"no se ha podido establecer la conexion";
       socket->disconnect();
     }
-
+    bool signUp = false;
     bool validName = false;
     int coins;
     std::vector<std::string> pokemonNames;
@@ -47,6 +47,7 @@ int main(){
         if(username=="nuevo"){
              ///Sign in
 			//Se pregunta el Username
+			signUp = true;
             std::cout<<"New Username:"<<std::endl;
             std::cin>>username;
 			//Se comprueba que no exista otro jugador con ese mismo Username
@@ -67,6 +68,7 @@ int main(){
                 }while(!pwdMatch);
                 packet << SIGNUP <<username<<password;
         }else{
+            signUp = false;
             std::cout<<"Contraseña:"<<std::endl;
             std::cin>>password;
             packet << LOGIN << username << password;
@@ -81,16 +83,23 @@ int main(){
         packet>>validName;
 
         if(!validName)
-            std::cout<<"Los datos introducidos son icorrectos"<<std::endl;
+        {
+            if(signUp)
+                std::cout<<"Este nombre ya existe. Por favor, introduce otro diferente"<<std::endl;
+            else
+                std::cout<<"Los datos introducidos son icorrectos"<<std::endl;
+        }
         else{
             int pokemonNumber;
             packet>>coins>>pokemonNumber;
+            std::cout << std::endl <<"Monedas: " << std::endl<< coins << std::endl << std::endl << "Pokemons: " << std::endl;
             for(;pokemonNumber>0;pokemonNumber--){
                 std::string pokemon;
                 packet>>pokemon;
                 std::cout<<pokemon<<std::endl;
                 pokemonNames.push_back(pokemon);
             }
+            std::cout << std::endl;
         }
 
     }while(!validName);
@@ -105,7 +114,7 @@ int main(){
         std::string nombre;
         std::string descripcion;
         packet>>nombre>>descripcion;
-        std::cout<<nombre<<":     "<<descripcion<<std::endl<<std::endl<<std::endl<<std::endl;
+        std::cout<<nombre<<std::endl<<descripcion<<std::endl<<std::endl;
     }
 
     bool mapSelected = false;
@@ -123,7 +132,6 @@ int main(){
 
     std::string structure;
     packet>>structure;
-    std::cout << structure << std::endl;
 
     DibujaSFML(socket, structure);
 
@@ -144,6 +152,8 @@ sf::Vector2f BoardToWindows(sf::Vector2f _position)
 
 void DibujaSFML(sf::TcpSocket *socket, std::string structure)
 {
+    sf::Vector2f position;
+
     sf::RenderWindow window(sf::VideoMode(640,640), "Interfaz cuadraditos");
     std::vector<std::vector<GameObject>> grid(GameObject::NONE);
     grid.resize(20,std::vector<GameObject>(20));
@@ -159,6 +169,11 @@ void DibujaSFML(sf::TcpSocket *socket, std::string structure)
             }
             else if (structure[i*20+j]=='I'){
                 grid[i][j]=GameObject::PLAYER;
+                position.x = j;
+                position.y = i;
+            }
+            else if(structure[i*20+j]=='S'){
+                grid[i][j]=GameObject::POKEMON;
             }
         }
     }
@@ -166,43 +181,54 @@ void DibujaSFML(sf::TcpSocket *socket, std::string structure)
     while(window.isOpen())
     {
         sf::Event event;
-
         //Este primer WHILE es para controlar los eventos del mouse
         while(window.pollEvent(event))
         {
-            switch(event.type)
-            {
-                case sf::Event::Closed:
+            if(event.type == sf::Event::Closed){
+                window.close();
+                sf::Packet packet;
+                packet<<DISCONNECT;
+                socket->send(packet);
+            }
+            else if(event.type == sf::Event::KeyPressed){
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+                {
                     window.close();
-                    sf::Packet packet;
-                    packet<<DISCONNECT;
-                    socket->send(packet);
-                    break;
-                case sf::Event::KeyPressed:
-                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-                    {
-                        window.close();
+                }
+                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+                {
+                    if(grid[position.y][position.x - 1] != GameObject::OBSTACLE){
+                        grid[position.y][position.x]=GameObject::NONE;
+                        position.x--;
+                        grid[position.y][position.x]=GameObject::PLAYER;
                     }
-                    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-                    {
-
+                }
+                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+                {
+                    if(grid[position.y][position.x + 1] != GameObject::OBSTACLE){
+                        grid[position.y][position.x]=GameObject::NONE;
+                        position.x++;
+                        grid[position.y][position.x]=GameObject::PLAYER;
                     }
-                    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+                }
+                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+                {
+                    if(grid[position.y - 1][position.x] != GameObject::OBSTACLE)
                     {
-
+                        grid[position.y][position.x]=GameObject::NONE;
+                        position.y--;
+                        grid[position.y][position.x]=GameObject::PLAYER;
                     }
-                    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+                }
+                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+                {
+                    if(grid[position.y + 1][position.x] != GameObject::OBSTACLE)
                     {
-
+                        grid[position.y][position.x]=GameObject::NONE;
+                        position.y++;
+                        grid[position.y][position.x]=GameObject::PLAYER;
                     }
-                    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-                    {
-
-                    }
-                    break;
-                default:
-                    break;
-
+                }
             }
         }
 
@@ -223,6 +249,13 @@ void DibujaSFML(sf::TcpSocket *socket, std::string structure)
                 else if (grid[i][j]==GameObject::PLAYER){
                     sf::CircleShape shape(RADIO_AVATAR);
                     shape.setFillColor(sf::Color::Blue);
+                    sf::Vector2f posicionDibujar = BoardToWindows(sf::Vector2f(j,i));
+                    shape.setPosition(posicionDibujar);
+                    window.draw(shape);
+                }
+                else if (grid[i][j]==GameObject::POKEMON){
+                    sf::CircleShape shape(RADIO_AVATAR);
+                    shape.setFillColor(sf::Color::Magenta);
                     sf::Vector2f posicionDibujar = BoardToWindows(sf::Vector2f(j,i));
                     shape.setPosition(posicionDibujar);
                     window.draw(shape);
