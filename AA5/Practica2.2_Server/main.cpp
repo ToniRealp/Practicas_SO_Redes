@@ -12,6 +12,7 @@
 #include <string>
 
 enum ID {LOGIN, SIGNUP, MAPS, DISCONNECT, SPAWN, CATCH};
+enum GAMESTATE {MENU, PLAYING};
 std::vector<sf::TcpSocket*> sockets;
 
 struct PokeInfo
@@ -35,8 +36,8 @@ void pokemonGen(sf::TcpSocket* socket, int spawnTime, std::vector<PokeInfo> poke
     double duration=0;
     int pokemonId;
 
-
-    do{
+    while(*playing)
+    {
         auto endfinal = std::chrono::high_resolution_clock::now();
         duration=std::chrono::duration_cast<std::chrono::seconds>(endfinal-start).count();
 
@@ -57,9 +58,10 @@ void pokemonGen(sf::TcpSocket* socket, int spawnTime, std::vector<PokeInfo> poke
                             pokemonSpawn->at(pos)=i;
                             sf::Packet packet;
                             packet<<SPAWN<<pos<<pokeInfo[i].name;
-                            if(socket->send(packet)!=sf::Socket::Status::Done){
-                                std::terminate();
-                            }
+                            if(!*playing)
+                                return;
+                            if(socket->send(packet)!=sf::Socket::Status::Done)
+                                return;
                             found=true;
                             std::cout<<"pokemon spawned"<<std::endl;
                             break;
@@ -68,7 +70,7 @@ void pokemonGen(sf::TcpSocket* socket, int spawnTime, std::vector<PokeInfo> poke
                 }
             }while(!found);
         }
-    }while(playing);
+    }
 }
 
 
@@ -88,7 +90,6 @@ void connection(sf::TcpSocket* socket)
     time_t logInSec, logOutSec;
 
     sf::Packet packet;
-
 
     bool validName = false;
 
@@ -233,64 +234,139 @@ void connection(sf::TcpSocket* socket)
         pokemonInfo.push_back(PokeInfo(resultSet->getInt("ID"),resultSet->getString("Name"),resultSet->getInt("Ratio"),resultSet->getInt("MinCoins"),resultSet->getInt("MaxCoins")));
 
     bool playing = true;
+    bool inGame=true;
     std::thread PokemonGeneration(&pokemonGen, socket, spawnTime, pokemonInfo, &pokemonSpawn, &playing);
 
-    resultSet->close();
-
+    //resultSet->close();
+    GAMESTATE gameState = PLAYING;
 
     do{
-        if(socket->receive(packet)!=sf::Socket::Status::Done){
-            break;
-        }
-        packet>>id;
-        std::cout<<"id: "<<id<<std::endl;
-        if(id == DISCONNECT)
-        {
 
-             for(int it = 0;it<sockets.size();it++)
-            {
-                if(sockets[it]==socket)
+        if(gameState==MENU)
+        {
+            std::cout<<"in map selection"<<std::endl;
+            packet.clear();
+            std::string mapName;
+            std::string mapStructure;
+            int numMapas;
+
+            resultSet = stmt->executeQuery("SELECT COUNT(*) FROM Mapas");
+
+            if(resultSet->next())
+                numMapas=resultSet->getInt(1);
+
+            resultSet = stmt->executeQuery("SELECT * FROM Mapas");
+            packet<<MAPS<<numMapas;
+
+            while(resultSet->next())
+                packet<<resultSet->getString("Name") << resultSet->getString("Description");
+
+            socket->send(packet);
+            //Se pregunta al usuario que mapa quiere jugar. Debe escribir el nombre del mapa
+            bool mapSelected = false;
+            int spawnTime;
+
+            do {
+                std::cout<<"Waiting for map selection"<<std::endl;
+
+                if(socket->receive(packet)!=sf::Socket::Status::Done)
                 {
-                    sockets.erase(sockets.begin()+it);
+                    std::cout<<"el cliente se ha desconectado"<<std::endl;
                     break;
                 }
-            }
 
-            tm* logInTime, * logOutTime;
-            char logInBuf [22];
-            char logOutBuf [22];
+                packet >> mapName;
+                resultSet->beforeFirst();
 
-            //La funcion strftime nos permite formatear la string con la fecha y hora para que se ajuste al formato de datetime de la bd
-            logInTime=localtime(&logInSec);
-            strftime(logInBuf,22,"%F %X\0",logInTime);
-            std::string logInStr(logInBuf);
+                while(resultSet->next())
+                {
+                    //Se comprueba que el mapa escrito exista en la BD
+                    if(mapName==resultSet->getString("Name"))
+                    {
+                        std::cout << "Map: "<<mapName <<"Selected"<< std::endl;
+                        mapStructure = resultSet->getString("Structure");
+                        spawnTime = resultSet->getInt("SpawnTime");
+                        mapSelected=true;
+                        logInSec = time(0);
+                        break;
+                    }
+                }
 
-            time_t logOutSec = time(0);
+                packet.clear();
+                packet<<mapSelected<<mapStructure;
+                socket->send(packet);
 
-            logOutTime=localtime(&logOutSec);
-            strftime(logOutBuf,22,"%F %X\0",logOutTime);
-            std::string logOutStr(logOutBuf);
+            }while(!mapSelected);
 
-            stmt->executeUpdate("INSERT INTO Sesion(PlayerID, LogInTime, LogOutTime) VALUES ("+playerID+",'"+logInStr+"','"+logOutStr+"')");
-
-            std::cout<<"El cliente "<<username<<" se ha desconectado"<<std::endl;
-
-            PokemonGeneration.join();
-            playing=false;
-
+            gameState=PLAYING;
+            std::thread PokemonGeneration(&pokemonGen, socket, spawnTime, pokemonInfo, &pokemonSpawn, &playing);
         }
-        else if(id==CATCH)
+
+
+        if(gameState==PLAYING)
         {
-            int pos;
-            packet>>pos;
-            std::string plID(playerID);
-            std::string pokID = std::to_string(pokemonInfo[pokemonSpawn[pos]].id);
-            std::cout<<pokemonInfo[pokemonSpawn[pos]].name<<std::endl;
-            stmt->executeUpdate("INSERT INTO PokemonXplayer(PlayerID, PokemonID) VALUES('"+plID+"','"+pokID+"')");
+            if(socket->receive(packet)!=sf::Socket::Status::Done){
+                break;
+                id=DISCONNECT;
+            }
+            else
+                packet>>id;
+                std::cout<<"id: "<<id<<std::endl;
 
+            if(id == DISCONNECT)
+            {
+                 for(int it = 0;it<sockets.size();it++)
+                {
+                    if(sockets[it]==socket)
+                    {
+                        sockets.erase(sockets.begin()+it);
+                        break;
+                    }
+                }
+
+                tm* logInTime, * logOutTime;
+                char logInBuf [22];
+                char logOutBuf [22];
+
+                //La funcion strftime nos permite formatear la string con la fecha y hora para que se ajuste al formato de datetime de la bd
+                logInTime=localtime(&logInSec);
+                strftime(logInBuf,22,"%F %X\0",logInTime);
+                std::string logInStr(logInBuf);
+
+                time_t logOutSec = time(0);
+
+                logOutTime=localtime(&logOutSec);
+                strftime(logOutBuf,22,"%F %X\0",logOutTime);
+                std::string logOutStr(logOutBuf);
+
+                stmt->executeUpdate("INSERT INTO Sesion(PlayerID, LogInTime, LogOutTime) VALUES ("+playerID+",'"+logInStr+"','"+logOutStr+"')");
+
+                std::cout<<"El cliente "<<username<<" se ha desconectado"<<std::endl;
+
+                playing=false;
+                PokemonGeneration.join();
+                std::cout<<"server joined"<<std::endl;
+                gameState = MENU;
+                packet.clear();
+                packet<<DISCONNECT;
+                socket->send(packet);
+
+            }
+            else if(id==CATCH)
+            {
+                int pos;
+                packet>>pos;
+                std::string plID(playerID);
+                std::string pokID = std::to_string(pokemonInfo[pokemonSpawn[pos]].id);
+                std::cout<<pokemonInfo[pokemonSpawn[pos]].name<<std::endl;
+                pokemonSpawn[pos]=0;
+                stmt->executeUpdate("INSERT INTO PokemonXplayer(PlayerID, PokemonID) VALUES('"+plID+"','"+pokID+"')");
+
+            }
         }
 
-    }while(playing);
+
+    }while(inGame);
 
 }
 
