@@ -21,8 +21,14 @@ void DibujaSFML(sf::TcpSocket*, std::string);
 enum GameObject {NONE, OBSTACLE, PLAYER, POKEMON};
 enum ID {LOGIN, SIGNUP, MAPS, DISCONNECT, SPAWN, CATCH};
 
+struct PokemonsInSpawns{
+    std::string name;
+    sf::Vector2f position;
+};
+
 std::vector<std::vector<GameObject>> grid(GameObject::NONE);
 sf::Vector2f position;
+std::vector<PokemonsInSpawns> spawns;
 
 int main(){
     sf::TcpSocket* socket = new sf::TcpSocket;
@@ -138,8 +144,6 @@ int main(){
 
 
 
-
-    std::vector<sf::Vector2f> spawns;
     grid.resize(20,std::vector<GameObject>(20));
 
     for (int i =0; i<20; i++)
@@ -155,13 +159,13 @@ int main(){
                 position.y = i;
             }
             else if(structure[i*20+j]=='S'){
-                spawns.push_back(sf::Vector2f(i,j));
+                spawns.push_back({"", sf::Vector2f(i,j)});
             }
         }
     }
 
     for(int i = 0; i < spawns.size(); i++)
-        std::cout << spawns[i].x << " - " << spawns[i].y << std::endl;
+        std::cout << spawns[i].position.x << " - " << spawns[i].position.y << std::endl;
 
     packet.clear();
     int numberOfSpawns = spawns.size();
@@ -175,10 +179,13 @@ int main(){
     while (1){
 
         int spawnPos;
+        std::string pokemonName;
         socket->receive(packet);
-        packet>>id>>spawnPos;
+        packet>>id>>spawnPos>>pokemonName;
         if(id==SPAWN){
-            grid[spawns[spawnPos].x][spawns[spawnPos].y]=POKEMON;
+            grid[spawns[spawnPos].position.x][spawns[spawnPos].position.y]=POKEMON;
+            spawns[spawnPos].name = pokemonName;
+            std::cout << spawns[spawnPos].name << std::endl;
         }
     }
 
@@ -205,6 +212,7 @@ void DibujaSFML(sf::TcpSocket *socket, std::string structure)
 
 
     sf::RenderWindow window(sf::VideoMode(640,640), "Interfaz cuadraditos");
+    sf::Packet packet;
 
     while(window.isOpen())
     {
@@ -214,9 +222,9 @@ void DibujaSFML(sf::TcpSocket *socket, std::string structure)
         {
             if(event.type == sf::Event::Closed){
                 window.close();
-                sf::Packet disconectPacket;
-                disconectPacket<<DISCONNECT;
-                socket->send(disconectPacket);
+                packet.clear();
+                packet<<DISCONNECT;
+                socket->send(packet);
             }
             else if(event.type == sf::Event::KeyPressed){
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
@@ -228,14 +236,41 @@ void DibujaSFML(sf::TcpSocket *socket, std::string structure)
                     if(grid[position.y][position.x - 1] != GameObject::OBSTACLE){
                         grid[position.y][position.x]=GameObject::NONE;
                         position.x--;
+                        if(grid[position.y][position.x] == GameObject::POKEMON)
+                        {
+                            for(int i = 0; i < spawns.size(); i++)
+                            {
+                                if(spawns[i].position.x == position.y && spawns[i].position.y == position.x)
+                                {
+                                    packet.clear();
+                                    packet<<CATCH<<i;
+                                    socket->send(packet);
+                                    std::cout << "You catched a: "<<spawns[i].name << std::endl;
+                                }
+                            }
+                        }
                         grid[position.y][position.x]=GameObject::PLAYER;
                     }
                 }
                 else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
                 {
-                    if(grid[position.y][position.x + 1] != GameObject::OBSTACLE){
+                    if(grid[position.y][position.x + 1] != GameObject::OBSTACLE)
+                    {
                         grid[position.y][position.x]=GameObject::NONE;
                         position.x++;
+                        if(grid[position.y][position.x] == GameObject::POKEMON)
+                        {
+                            for(int i = 0; i < spawns.size(); i++)
+                            {
+                                if(spawns[i].position.x == position.y && spawns[i].position.y == position.x)
+                                {
+                                    packet.clear();
+                                    packet<<CATCH<<i;
+                                    socket->send(packet);
+                                    std::cout << "You catched a: "<<spawns[i].name << std::endl;
+                                }
+                            }
+                        }
                         grid[position.y][position.x]=GameObject::PLAYER;
                     }
                 }
@@ -245,6 +280,19 @@ void DibujaSFML(sf::TcpSocket *socket, std::string structure)
                     {
                         grid[position.y][position.x]=GameObject::NONE;
                         position.y--;
+                        if(grid[position.y][position.x] == GameObject::POKEMON)
+                        {
+                            for(int i = 0; i < spawns.size(); i++)
+                            {
+                                if(spawns[i].position.x == position.y && spawns[i].position.y == position.x)
+                                {
+                                    packet.clear();
+                                    packet<<CATCH<<i;
+                                    socket->send(packet);
+                                    std::cout << "You catched a: "<<spawns[i].name << std::endl;
+                                }
+                            }
+                        }
                         grid[position.y][position.x]=GameObject::PLAYER;
                     }
                 }
@@ -254,6 +302,19 @@ void DibujaSFML(sf::TcpSocket *socket, std::string structure)
                     {
                         grid[position.y][position.x]=GameObject::NONE;
                         position.y++;
+                        if(grid[position.y][position.x] == GameObject::POKEMON)
+                        {
+                            for(int i = 0; i < spawns.size(); i++)
+                            {
+                                if(spawns[i].position.x == position.y && spawns[i].position.y == position.x)
+                                {
+                                    packet.clear();
+                                    packet<<CATCH<<i;
+                                    socket->send(packet);
+                                    std::cout << "You catched a: "<<spawns[i].name << std::endl;
+                                }
+                            }
+                        }
                         grid[position.y][position.x]=GameObject::PLAYER;
                     }
                 }
