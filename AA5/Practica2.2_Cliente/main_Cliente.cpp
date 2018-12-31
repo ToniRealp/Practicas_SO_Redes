@@ -17,9 +17,11 @@
 #define OFFSET_AVATAR 5
 
 void DibujaSFML(sf::TcpSocket*, std::string);
+void Recieve(sf::TcpSocket *);
 
 enum GameObject {NONE, OBSTACLE, PLAYER, POKEMON};
 enum ID {LOGIN, SIGNUP, MAPS, DISCONNECT, SPAWN, CATCH};
+enum GameState {SELECTMAP, PLAY};
 
 struct PokemonsInSpawns{
     std::string name;
@@ -29,6 +31,7 @@ struct PokemonsInSpawns{
 std::vector<std::vector<GameObject>> grid(GameObject::NONE);
 sf::Vector2f position;
 std::vector<PokemonsInSpawns> spawns;
+bool playing = false;
 
 int main(){
     sf::TcpSocket* socket = new sf::TcpSocket;
@@ -113,84 +116,82 @@ int main(){
 
     }while(!validName);
 
-    int id;
-    int numMapas;
-    socket->receive(packet);
-    packet>>id >> numMapas;
-
-    for(;numMapas>0;numMapas--)
-    {
-        std::string nombre;
-        std::string descripcion;
-        packet>>nombre>>descripcion;
-        std::cout<<nombre<<std::endl<<descripcion<<std::endl<<std::endl;
-    }
-
-    bool mapSelected = false;
-    do{
-        std::cout<<"Introduce el nombre del mapa al que desees jugar:"<<std::endl;
-        std::string mapName;
-        std::cin>>mapName;
-        packet.clear();
-        packet<<mapName;
-        socket->send(packet);
-        socket->receive(packet);
-        packet>>mapSelected;
-
-    }while(!mapSelected);
-
+    GameState gameState = SELECTMAP;
     std::string structure;
-    packet>>structure;
 
-
-
-    grid.resize(20,std::vector<GameObject>(20));
-
-    for (int i =0; i<20; i++)
-    {
-        for(int j = 0; j<20; j++)
+    do{
+        if(gameState == SELECTMAP)
         {
-            if (structure[i*20+j]=='O'){
-                    grid[i][j]=GameObject::OBSTACLE;
+            structure = "";
+            int id;
+            int numMapas;
+            socket->receive(packet);
+            packet>>id >> numMapas;
+            std::cout << "packet recieved" << std::endl;
+
+            for(;numMapas>0;numMapas--)
+            {
+                std::string nombre;
+                std::string descripcion;
+                packet>>nombre>>descripcion;
+                std::cout<<nombre<<std::endl<<descripcion<<std::endl<<std::endl;
             }
-            else if (structure[i*20+j]=='I'){
-                grid[i][j]=GameObject::PLAYER;
-                position.x = j;
-                position.y = i;
+
+            bool mapSelected = false;
+            do{
+                std::cout<<"Introduce el nombre del mapa al que desees jugar:"<<std::endl;
+                std::string mapName;
+                std::cin>>mapName;
+                packet.clear();
+                packet<<mapName;
+                socket->send(packet);
+                socket->receive(packet);
+                packet>>mapSelected;
+
+            }while(!mapSelected);
+
+            packet>>structure;
+            playing = true;
+            gameState = PLAY;
+
+            grid.resize(20,std::vector<GameObject>(20));
+
+            for (int i =0; i<20; i++)
+            {
+                for(int j = 0; j<20; j++)
+                {
+                    if (structure[i*20+j]=='O'){
+                            grid[i][j]=GameObject::OBSTACLE;
+                    }
+                    else if (structure[i*20+j]=='I'){
+                        grid[i][j]=GameObject::PLAYER;
+                        position.x = j;
+                        position.y = i;
+                    }
+                    else if(structure[i*20+j]=='S'){
+                        spawns.push_back({"", sf::Vector2f(i,j)});
+                    }
+                }
             }
-            else if(structure[i*20+j]=='S'){
-                spawns.push_back({"", sf::Vector2f(i,j)});
-            }
+
+            for(int i = 0; i < spawns.size(); i++)
+                std::cout << spawns[i].position.x << " - " << spawns[i].position.y << std::endl;
+
+            packet.clear();
+            int numberOfSpawns = spawns.size();
+            packet<<numberOfSpawns;
+            socket->send(packet);
         }
-    }
+        else if(gameState == PLAY)
+        {
+            std::cout << "playing" << std::endl;
+            std::thread recieve(Recieve, socket);
+            DibujaSFML(socket, structure);
 
-    for(int i = 0; i < spawns.size(); i++)
-        std::cout << spawns[i].position.x << " - " << spawns[i].position.y << std::endl;
-
-    packet.clear();
-    int numberOfSpawns = spawns.size();
-    packet<<numberOfSpawns;
-    socket->send(packet);
-    std::cout << numberOfSpawns << std::endl;
-
-
-    std::thread Draw(DibujaSFML, socket, structure);
-
-    while (1){
-
-        int spawnPos;
-        std::string pokemonName;
-        socket->receive(packet);
-        packet>>id>>spawnPos>>pokemonName;
-        if(id==SPAWN){
-            grid[spawns[spawnPos].position.x][spawns[spawnPos].position.y]=POKEMON;
-            spawns[spawnPos].name = pokemonName;
-            std::cout << spawns[spawnPos].name << std::endl;
+            recieve.join();
+            gameState = SELECTMAP;
         }
-    }
-
-
-    Draw.join();
+    }while(true);
 
     socket->disconnect();
 }
@@ -205,6 +206,26 @@ int main(){
 sf::Vector2f BoardToWindows(sf::Vector2f _position)
 {
     return sf::Vector2f(_position.x*LADO_CASILLA+OFFSET_AVATAR, _position.y*LADO_CASILLA+OFFSET_AVATAR);
+}
+
+void Recieve(sf::TcpSocket *socket)
+{
+    while(playing)
+    {
+        sf::Packet packet;
+        int id;
+        int spawnPos;
+        std::string pokemonName;
+        if(socket->receive(packet)!= sf::Socket::Status::Done)
+            break;
+        packet>>id>>spawnPos>>pokemonName;
+        if(id==SPAWN){
+            grid[spawns[spawnPos].position.x][spawns[spawnPos].position.y]=POKEMON;
+            spawns[spawnPos].name = pokemonName;
+        }
+        else if(id == DISCONNECT)
+            return;
+    }
 }
 
 void DibujaSFML(sf::TcpSocket *socket, std::string structure)
@@ -225,11 +246,16 @@ void DibujaSFML(sf::TcpSocket *socket, std::string structure)
                 packet.clear();
                 packet<<DISCONNECT;
                 socket->send(packet);
+                playing = false;
             }
             else if(event.type == sf::Event::KeyPressed){
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
                 {
                     window.close();
+                    packet.clear();
+                    packet<<DISCONNECT;
+                    socket->send(packet);
+                    playing = false;
                 }
                 else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
                 {
