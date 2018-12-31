@@ -9,6 +9,7 @@
 #include <thread>
 #include <ctime>
 #include <chrono>
+#include <string>
 
 enum ID {LOGIN, SIGNUP, MAPS, DISCONNECT, SPAWN, CATCH};
 std::vector<sf::TcpSocket*> sockets;
@@ -22,10 +23,11 @@ struct PokeInfo
     PokeInfo(int _id, std::string _name, int _rate, int _minCoins, int _maxCoins):id(_id),name(_name),rate(_rate),minCoins(_minCoins), maxCoins(_maxCoins){}
 };
 
-void pokemonGen(sf::TcpSocket* socket, int spawnTime, std::vector<PokeInfo> pokeInfo, std::vector<int>* pokemonSpawn){
+void pokemonGen(sf::TcpSocket* socket, int spawnTime, std::vector<PokeInfo> pokeInfo, std::vector<int>* pokemonSpawn, bool* playing){
 
     int totalRatio = 0;
-    for(int i=0; i<pokeInfo.size();i++){
+    for(int i=0; i<pokeInfo.size();i++)
+    {
         totalRatio+=pokeInfo[i].rate;
     }
 
@@ -33,11 +35,13 @@ void pokemonGen(sf::TcpSocket* socket, int spawnTime, std::vector<PokeInfo> poke
     double duration=0;
     int pokemonId;
 
-    while(1){
+
+    do{
         auto endfinal = std::chrono::high_resolution_clock::now();
         duration=std::chrono::duration_cast<std::chrono::seconds>(endfinal-start).count();
 
-        if(duration*10>=spawnTime){
+        if(duration*10>=spawnTime)
+        {
             start = std::chrono::high_resolution_clock::now();
             bool found = false;
             do{
@@ -48,21 +52,23 @@ void pokemonGen(sf::TcpSocket* socket, int spawnTime, std::vector<PokeInfo> poke
                     for(int i=0; i<pokeInfo.size();i++)
                     {
                         counter+=pokeInfo[i].rate;
-                        if(spawnId<=counter){
+                        if(spawnId<=counter)
+                        {
                             pokemonSpawn->at(pos)=i;
                             sf::Packet packet;
-                            packet<<SPAWN<<pos;
-                            socket->send(packet);
+                            packet<<SPAWN<<pos<<pokeInfo[i].name;
+                            if(socket->send(packet)!=sf::Socket::Status::Done){
+                                std::terminate();
+                            }
                             found=true;
+                            std::cout<<"pokemon spawned"<<std::endl;
                             break;
                         }
                     }
                 }
             }while(!found);
         }
-
-
-    }
+    }while(playing);
 }
 
 
@@ -85,10 +91,12 @@ void connection(sf::TcpSocket* socket)
 
 
     bool validName = false;
-    do{
-        packet.clear();
 
+    do{
+
+        packet.clear();
         std::cout<<"esperando username"<<std::endl;
+
         if(socket->receive(packet)!=sf::Socket::Done)
         {
             std::cout<<"el cliente se ha desconectado"<<std::endl;
@@ -139,9 +147,12 @@ void connection(sf::TcpSocket* socket)
                 coins = 0;
             }
         }
+
         packet.clear();
         packet<<validName;
-        if(validName){
+
+        if(validName)
+        {
             packet<<coins<<pokemonCounter;
         }
 
@@ -163,31 +174,39 @@ void connection(sf::TcpSocket* socket)
     int numMapas;
 
     resultSet = stmt->executeQuery("SELECT COUNT(*) FROM Mapas");
+
     if(resultSet->next())
         numMapas=resultSet->getInt(1);
+
     resultSet = stmt->executeQuery("SELECT * FROM Mapas");
     packet<<MAPS<<numMapas;
 
-    while(resultSet->next()){
-             packet<<resultSet->getString("Name") << resultSet->getString("Description");
-        }
+    while(resultSet->next())
+        packet<<resultSet->getString("Name") << resultSet->getString("Description");
+
     socket->send(packet);
 	//Se pregunta al usuario que mapa quiere jugar. Debe escribir el nombre del mapa
     bool mapSelected = false;
     int spawnTime;
 
     do {
-        if(socket->receive(packet)!=sf::Socket::Status::Done){
+        std::cout<<"Waiting for map selection"<<std::endl;
+
+        if(socket->receive(packet)!=sf::Socket::Status::Done)
+        {
             std::cout<<"el cliente se ha desconectado"<<std::endl;
             break;
         }
+
         packet >> mapName;
         resultSet->beforeFirst();
-        while(resultSet->next()){
+
+        while(resultSet->next())
+        {
 			//Se comprueba que el mapa escrito exista en la BD
             if(mapName==resultSet->getString("Name"))
             {
-                std::cout << "Exists" << std::endl;
+                std::cout << "Map: "<<mapName <<"Selected"<< std::endl;
                 mapStructure = resultSet->getString("Structure");
                 spawnTime = resultSet->getInt("SpawnTime");
                 mapSelected=true;
@@ -206,29 +225,27 @@ void connection(sf::TcpSocket* socket)
     socket->receive(packet);
     packet>>numberOfSpawns;
     std::vector<int> pokemonSpawn(numberOfSpawns,0);
-
     std::vector<PokeInfo> pokemonInfo;
+
     resultSet = stmt->executeQuery("SELECT * FROM Pokemons");
+
     while(resultSet->next())
-    {
         pokemonInfo.push_back(PokeInfo(resultSet->getInt("ID"),resultSet->getString("Name"),resultSet->getInt("Ratio"),resultSet->getInt("MinCoins"),resultSet->getInt("MaxCoins")));
-        std::cout<<"pokemon ratio: "<<resultSet->getInt("Ratio")<<std::endl;
-    }
 
-
-
-    std::thread PokemonGeneration(&pokemonGen, socket, spawnTime, pokemonInfo, &pokemonSpawn);
-    PokemonGeneration.detach();
+    bool playing = true;
+    std::thread PokemonGeneration(&pokemonGen, socket, spawnTime, pokemonInfo, &pokemonSpawn, &playing);
 
     resultSet->close();
-    bool playing = true;
-    do{
-        socket->receive(packet);
-        packet>>id;
 
-        switch (id)
+
+    do{
+        if(socket->receive(packet)!=sf::Socket::Status::Done){
+            break;
+        }
+        packet>>id;
+        std::cout<<"id: "<<id<<std::endl;
+        if(id == DISCONNECT)
         {
-            case DISCONNECT:
 
              for(int it = 0;it<sockets.size();it++)
             {
@@ -243,7 +260,7 @@ void connection(sf::TcpSocket* socket)
             char logInBuf [22];
             char logOutBuf [22];
 
-        //La funcion strftime nos permite formatear la string con la fecha y hora para que se ajuste al formato de datetime de la bd
+            //La funcion strftime nos permite formatear la string con la fecha y hora para que se ajuste al formato de datetime de la bd
             logInTime=localtime(&logInSec);
             strftime(logInBuf,22,"%F %X\0",logInTime);
             std::string logInStr(logInBuf);
@@ -258,24 +275,21 @@ void connection(sf::TcpSocket* socket)
 
             std::cout<<"El cliente "<<username<<" se ha desconectado"<<std::endl;
 
+            PokemonGeneration.join();
             playing=false;
 
-            break;
-
-            case CATCH:
-
-
-
-            break;
-
-            default:
-            break;
-
         }
-        if(id==DISCONNECT)
+        else if(id==CATCH)
         {
+            int pos;
+            packet>>pos;
+            std::string plID(playerID);
+            std::string pokID = std::to_string(pokemonInfo[pokemonSpawn[pos]].id);
+            std::cout<<pokemonInfo[pokemonSpawn[pos]].name<<std::endl;
+            stmt->executeUpdate("INSERT INTO PokemonXplayer(PlayerID, PokemonID) VALUES('"+plID+"','"+pokID+"')");
 
         }
+
     }while(playing);
 
 }
