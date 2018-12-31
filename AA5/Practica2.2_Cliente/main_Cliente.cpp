@@ -19,11 +19,14 @@
 void DibujaSFML(sf::TcpSocket*, std::string);
 
 enum GameObject {NONE, OBSTACLE, PLAYER, POKEMON};
-enum ID {LOGIN, SIGNUP, MAPS, DISCONNECT};
+enum ID {LOGIN, SIGNUP, MAPS, DISCONNECT, SPAWN, CATCH};
+
+std::vector<std::vector<GameObject>> grid(GameObject::NONE);
+sf::Vector2f position;
 
 int main(){
     sf::TcpSocket* socket = new sf::TcpSocket;
-    sf::Socket::Status status = socket->connect("192.168.1.67", 50000, sf::seconds(5.f));
+    sf::Socket::Status status = socket->connect("79.154.246.236", 50000, sf::seconds(5.f));
 
     if (status != sf::Socket::Done)
     {
@@ -133,7 +136,54 @@ int main(){
     std::string structure;
     packet>>structure;
 
-    DibujaSFML(socket, structure);
+
+
+
+    std::vector<sf::Vector2f> spawns;
+    grid.resize(20,std::vector<GameObject>(20));
+
+    for (int i =0; i<20; i++)
+    {
+        for(int j = 0; j<20; j++)
+        {
+            if (structure[i*20+j]=='O'){
+                    grid[i][j]=GameObject::OBSTACLE;
+            }
+            else if (structure[i*20+j]=='I'){
+                grid[i][j]=GameObject::PLAYER;
+                position.x = j;
+                position.y = i;
+            }
+            else if(structure[i*20+j]=='S'){
+                spawns.push_back(sf::Vector2f(i,j));
+            }
+        }
+    }
+
+    for(int i = 0; i < spawns.size(); i++)
+        std::cout << spawns[i].x << " - " << spawns[i].y << std::endl;
+
+    packet.clear();
+    int numberOfSpawns = spawns.size();
+    packet<<numberOfSpawns;
+    socket->send(packet);
+    std::cout << numberOfSpawns << std::endl;
+
+
+    std::thread Draw(DibujaSFML, socket, structure);
+
+    while (1){
+
+        int spawnPos;
+        socket->receive(packet);
+        packet>>id>>spawnPos;
+        if(id==SPAWN){
+            grid[spawns[spawnPos].x][spawns[spawnPos].y]=POKEMON;
+        }
+    }
+
+
+    Draw.join();
 
     socket->disconnect();
 }
@@ -152,42 +202,9 @@ sf::Vector2f BoardToWindows(sf::Vector2f _position)
 
 void DibujaSFML(sf::TcpSocket *socket, std::string structure)
 {
-    sf::Vector2f position;
+
 
     sf::RenderWindow window(sf::VideoMode(640,640), "Interfaz cuadraditos");
-    std::vector<std::vector<GameObject>> grid(GameObject::NONE);
-    std::vector<sf::Vector2f> spawns;
-    grid.resize(20,std::vector<GameObject>(20));
-
-    for (int i =0; i<20; i++)
-    {
-        for(int j = 0; j<20; j++)
-        {
-            sf::RectangleShape rectBlanco(sf::Vector2f(LADO_CASILLA,LADO_CASILLA));
-            rectBlanco.setFillColor(sf::Color::White);
-            if (structure[i*20+j]=='O'){
-                    grid[i][j]=GameObject::OBSTACLE;
-            }
-            else if (structure[i*20+j]=='I'){
-                grid[i][j]=GameObject::PLAYER;
-                position.x = j;
-                position.y = i;
-            }
-            else if(structure[i*20+j]=='S'){
-                spawns.push_back(sf::Vector2f(i,j));
-                grid[i][j]=GameObject::POKEMON;
-            }
-        }
-    }
-
-    for(int i = 0; i < spawns.size(); i++)
-        std::cout << spawns[i].x << " - " << spawns[i].y << std::endl;
-
-    sf::Packet packet;
-    int numberOfSpawns = spawns.size();
-    packet<<numberOfSpawns;
-    socket->send(packet);
-    std::cout << numberOfSpawns << std::endl;
 
     while(window.isOpen())
     {
@@ -197,9 +214,9 @@ void DibujaSFML(sf::TcpSocket *socket, std::string structure)
         {
             if(event.type == sf::Event::Closed){
                 window.close();
-                packet.clear();
-                packet<<DISCONNECT;
-                socket->send(packet);
+                sf::Packet disconectPacket;
+                disconectPacket<<DISCONNECT;
+                socket->send(disconectPacket);
             }
             else if(event.type == sf::Event::KeyPressed){
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
