@@ -8,13 +8,66 @@
 #include <vector>
 #include <thread>
 #include <ctime>
+#include <chrono>
 
-enum ID {LOGIN, SIGNUP, MAPS, DISCONNECT};
+enum ID {LOGIN, SIGNUP, MAPS, DISCONNECT, SPAWN, CATCH};
 std::vector<sf::TcpSocket*> sockets;
 
+struct PokeInfo
+{
+    int id;
+    std::string name;
+    int rate;
+    int minCoins, maxCoins;
+    PokeInfo(int _id, std::string _name, int _rate, int _minCoins, int _maxCoins):id(_id),name(_name),rate(_rate),minCoins(_minCoins), maxCoins(_maxCoins){}
+};
 
-void connection(sf::TcpSocket* socket){
+void pokemonGen(sf::TcpSocket* socket, int spawnTime, std::vector<PokeInfo> pokeInfo, std::vector<int>* pokemonSpawn){
 
+    int totalRatio = 0;
+    for(int i=0; i<pokeInfo.size();i++){
+        totalRatio+=pokeInfo[i].rate;
+    }
+
+    auto start = std::chrono::high_resolution_clock::now();
+    double duration=0;
+    int pokemonId;
+
+    while(1){
+        auto endfinal = std::chrono::high_resolution_clock::now();
+        duration=std::chrono::duration_cast<std::chrono::seconds>(endfinal-start).count();
+
+        if(duration*10>=spawnTime){
+            start = std::chrono::high_resolution_clock::now();
+            bool found = false;
+            do{
+                int pos = rand()%(pokemonSpawn->size());
+                if(pokemonSpawn->at(pos)==0){
+                    int spawnId = rand()%(totalRatio+1);
+                    int counter = 0;
+                    for(int i=0; i<pokeInfo.size();i++)
+                    {
+                        counter+=pokeInfo[i].rate;
+                        if(spawnId<=counter){
+                            pokemonSpawn->at(pos)=i;
+                            sf::Packet packet;
+                            packet<<SPAWN<<pos;
+                            socket->send(packet);
+                            found=true;
+                            break;
+                        }
+                    }
+                }
+            }while(!found);
+        }
+
+
+    }
+}
+
+
+void connection(sf::TcpSocket* socket)
+{
     ///Se inicializa la conexión a la BD PracticaRedesAA4
     sql::Driver* driver = sql::mysql::get_driver_instance();
     sql::Connection* conn = driver->connect("tcp://127.0.0.1","root","linux123");
@@ -29,6 +82,7 @@ void connection(sf::TcpSocket* socket){
     time_t logInSec, logOutSec;
 
     sf::Packet packet;
+
 
     bool validName = false;
     do{
@@ -45,10 +99,7 @@ void connection(sf::TcpSocket* socket){
             packet>>id>>username>>password;
             std::cout<<"datos de login: "<<username<<" "<<password<<std::endl;
         }
-
-
-        //resultSet = stmt->executeQuery("SELECT * FROM Player WHERE Player.Username = '"+ username + "'" "AND Player.Password = '"+ password + "'");
-            //Si existe algun usuario con esa combinación de Username y Password se inicia sesión en esa cuenta
+        //Si existe algun usuario con esa combinación de Username y Password se inicia sesión en esa cuenta
 
         std::vector<std::string>pokemonNames;
         int pokemonCounter=0;
@@ -123,6 +174,7 @@ void connection(sf::TcpSocket* socket){
     socket->send(packet);
 	//Se pregunta al usuario que mapa quiere jugar. Debe escribir el nombre del mapa
     bool mapSelected = false;
+    int spawnTime;
 
     do {
         if(socket->receive(packet)!=sf::Socket::Status::Done){
@@ -137,6 +189,7 @@ void connection(sf::TcpSocket* socket){
             {
                 std::cout << "Exists" << std::endl;
                 mapStructure = resultSet->getString("Structure");
+                spawnTime = resultSet->getInt("SpawnTime");
                 mapSelected=true;
                 logInSec = time(0);
                 break;
@@ -152,37 +205,78 @@ void connection(sf::TcpSocket* socket){
     int numberOfSpawns;
     socket->receive(packet);
     packet>>numberOfSpawns;
-    std::cout << numberOfSpawns << std::endl;
+    std::vector<int> pokemonSpawn(numberOfSpawns,0);
 
-
-    socket->receive(packet);
-    packet>>id;
-    if(id==DISCONNECT){
-        for(int it = 0;it<sockets.size();it++){
-            if(sockets[it]==socket){
-                sockets.erase(sockets.begin()+it);
-                break;
-            }
-        }
-
-        tm* logInTime, * logOutTime;
-        char logInBuf [22];
-        char logOutBuf [22];
-    //La funcion strftime nos permite formatear la string con la fecha y hora para que se ajuste al formato de datetime de la bd
-        logInTime=localtime(&logInSec);
-        strftime(logInBuf,22,"%F %X\0",logInTime);
-        std::string logInStr(logInBuf);
-
-        time_t logOutSec = time(0);
-
-        logOutTime=localtime(&logOutSec);
-        strftime(logOutBuf,22,"%F %X\0",logOutTime);
-        std::string logOutStr(logOutBuf);
-
-        stmt->executeUpdate("INSERT INTO Sesion(PlayerID, LogInTime, LogOutTime) VALUES ("+playerID+",'"+logInStr+"','"+logOutStr+"')");
-
-        std::cout<<"El cliente "<<username<<" se ha desconectado"<<std::endl;
+    std::vector<PokeInfo> pokemonInfo;
+    resultSet = stmt->executeQuery("SELECT * FROM Pokemons");
+    while(resultSet->next())
+    {
+        pokemonInfo.push_back(PokeInfo(resultSet->getInt("ID"),resultSet->getString("Name"),resultSet->getInt("Ratio"),resultSet->getInt("MinCoins"),resultSet->getInt("MaxCoins")));
+        std::cout<<"pokemon ratio: "<<resultSet->getInt("Ratio")<<std::endl;
     }
+
+
+
+    std::thread PokemonGeneration(&pokemonGen, socket, spawnTime, pokemonInfo, &pokemonSpawn);
+    PokemonGeneration.detach();
+
+    resultSet->close();
+    bool playing = true;
+    do{
+        socket->receive(packet);
+        packet>>id;
+
+        switch (id)
+        {
+            case DISCONNECT:
+
+             for(int it = 0;it<sockets.size();it++)
+            {
+                if(sockets[it]==socket)
+                {
+                    sockets.erase(sockets.begin()+it);
+                    break;
+                }
+            }
+
+            tm* logInTime, * logOutTime;
+            char logInBuf [22];
+            char logOutBuf [22];
+
+        //La funcion strftime nos permite formatear la string con la fecha y hora para que se ajuste al formato de datetime de la bd
+            logInTime=localtime(&logInSec);
+            strftime(logInBuf,22,"%F %X\0",logInTime);
+            std::string logInStr(logInBuf);
+
+            time_t logOutSec = time(0);
+
+            logOutTime=localtime(&logOutSec);
+            strftime(logOutBuf,22,"%F %X\0",logOutTime);
+            std::string logOutStr(logOutBuf);
+
+            stmt->executeUpdate("INSERT INTO Sesion(PlayerID, LogInTime, LogOutTime) VALUES ("+playerID+",'"+logInStr+"','"+logOutStr+"')");
+
+            std::cout<<"El cliente "<<username<<" se ha desconectado"<<std::endl;
+
+            playing=false;
+
+            break;
+
+            case CATCH:
+
+
+
+            break;
+
+            default:
+            break;
+
+        }
+        if(id==DISCONNECT)
+        {
+
+        }
+    }while(playing);
 
 }
 
