@@ -15,66 +15,63 @@
 #define RADIUS_AVATAR 12.5f
 #define OFFSET_AVATAR 5
 
-void PrintSFML(sf::TcpSocket*, std::string);
+void PrintSFML(sf::TcpSocket*, std::string, std::string);
 void RecieveOnPlay(sf::TcpSocket *);
+bool Reconnecting(sf::TcpSocket*, sf::Socket::Status);
 
 enum GameObject {NONE, OBSTACLE, PLAYER, POKEMON};
-enum ID {LOGIN, SIGNUP, MAPS, DISCONNECT, SPAWN, CATCH, VALIDSPAWN, INVENTORY, COINS};
+enum ID {LOGIN, SIGNUP, MAPS, DISCONNECT, SPAWN, CATCH, VALIDSPAWN, INVENTORY, COINS, RECOLLECT};
 enum GameState {SELECTMAP, PLAY};
 
-struct PokemonsInSpawns{
+struct PokemonsInSpawns
+{
     std::string name;
     sf::Vector2f position;
 };
 
-std::vector<std::vector<GameObject>> grid(GameObject::NONE);
-sf::Vector2f playerPosition;
-std::vector<PokemonsInSpawns> spawns;
 bool playing = false;
+std::vector<std::vector<GameObject>> grid(GameObject::NONE);
+std::vector<PokemonsInSpawns> spawns;
+sf::Vector2f playerPosition;
+int recollectCoins;
 
 int main(){
     //Inicializamos el socket para la conexión con el servidor
     sf::TcpSocket* socket = new sf::TcpSocket;
-    sf::Socket::Status status = socket->connect("79.154.246.236", 50000, sf::seconds(5.f));
+    sf::Socket::Status status = socket->connect("79.154.246.236", 50000, sf::seconds(30.f));
 
-    //Comprobación de errores
+    //Comprobación de errores en la conexión cliente-servidor
     if (status != sf::Socket::Done)
-    {
-      std::cout<<"ERROR: Server unreachable." << std::endl;
-      socket->disconnect();
-      return(0);
-    }
+        if(Reconnecting(socket, status))
+          return(0);
 
-    //Variables necesarias para el inicio de sesión y/o creación de nuevo usuario
+    //Variables necesarias para el inicio de sesión o creación de nuevo usuario
     sf::Packet packet;
 
     bool signUp = false;
     bool validName = false;
 
-    int coins;
-    std::vector<std::string> pokemonNames;
     std::string username, password;
+
+    int coins;
 
     do
     {
-		///Login / Sign Up
+        //Se pregunta el nombre de usuario
+        std::cout << "Username:" << std::endl;
+        std::cin >> username;
 
-        std::cout<<"Username:"<<std::endl;
-        std::cin>>username;
-
-        if(username=="nuevo" || username=="new")
+        //Si es "nuevo" o "new" se pasa a la creación de un nuevo usuario
+        if(username == "nuevo" || username == "new")
         {
-            ///Sign Up
-			//Se pregunta el Username
 			signUp = true;
-            std::cout<<"New Username:"<<std::endl;
-            std::cin>>username;
-			//Se comprueba que no exista otro jugador con ese mismo Username
-            bool pwdMatch = false;
+			//Nuevo nombre de usuario
+            std::cout << "New Username:" << std::endl;
+            std::cin >> username;
 
+            bool pwdMatch = false;
             do
             {
-                ///Asignación de la contraseña
                 //Se pregunta la contraseña
                 std::string confirmPassword;
                 std::cout<< "Password:"<<std::endl;
@@ -82,98 +79,118 @@ int main(){
                 //Confirmación de la contraseña
                 std::cout<< "Confirm Password:"<<std::endl;
                 std::cin>>confirmPassword;
-
+                //Si las contraseñas coinciden
                 if(password==confirmPassword)
                     pwdMatch=true;
-
-            }while(!pwdMatch);
+            }
+            while(!pwdMatch);
 
             packet.clear();
-            packet << SIGNUP <<username<<password;
+            packet << SIGNUP << username << password;
         }
+        //Si el usuario no es "nuevo" o "new"
         else
         {
             signUp = false;
-            std::cout<<"Password:"<<std::endl;
-            std::cin>>password;
+            std::cout << "Password:" << std::endl;
+            std::cin >> password;
 
             packet.clear();
             packet << LOGIN << username << password;
         }
-
-        if(socket->send(packet)!= sf::Socket::Status::Done){
-            std::cout<<"ERROR: Server unreachable."<<std::endl;
-            break;
-        }
-
-        socket->receive(packet);
-        packet>>validName;
-
+        //Se envía al servidor la información recibida y comprueba que el servidor y el cliente sigan conectados.
+        if(socket->send(packet)!= sf::Socket::Status::Done)
+            if(Reconnecting(socket, status))
+                return(0);
+        //Si el servidor y el cliente siguen conectados se recibe si la información enviada es correcta o no
+        if(socket->receive(packet) != sf::Socket::Status::Done)
+            if(Reconnecting(socket, status))
+                return(0);
+        packet >> validName;
+        //Si la combinación usuario-contraseña es incorrecta
         if(!validName)
-        {
+        {   //El nombre utilizado para darse de alta ya existe
             if(signUp)
-                std::cout<<"This name already exists. Please, write a different one."<<std::endl;
+                std::cout << "This name already exists. Please, write a different one." << std::endl;
+            //El usuario o la contraseña son incorrectos
             else
-                std::cout<<"Username or Password are incorrect."<<std::endl;
+                std::cout << "Username or Password are incorrect." << std::endl;
         }
+        //Si la combinación usuario-contraseña es correcta
         else
         {
-            std::system("clear");
+            //Se recogen los datos del usuario (monedas y pokemons) y se muestran por consola
             int pokemonNumber;
-            packet>>coins>>pokemonNumber;
-            std::cout << std::endl <<"Coins: " << coins << std::endl << std::endl << "Pokemons: " << std::endl;
-            for(;pokemonNumber>0;pokemonNumber--){
+            packet >> coins >> pokemonNumber;
+
+            std::system("clear");
+            std::cout << "Session opened: " << username << std::endl << std::endl << "Coins: " << coins << std::endl << std::endl << "Pokemons: " << std::endl;
+
+            for(;pokemonNumber>0;pokemonNumber--)
+            {
                 std::string pokemon;
-                packet>>pokemon;
-                std::cout<<pokemon<<std::endl;
-                pokemonNames.push_back(pokemon);
+                packet >> pokemon;
+                std::cout << pokemon << std::endl;
             }
             std::cout << std::endl;
         }
 
     }while(!validName);
 
+    //Variables necesarias para el flujo de juego (selección de nivel y juego)
     GameState gameState = SELECTMAP;
     std::string structure;
 
     do
     {
+        std::string mapName;
+        //Si el jugador está eligiendo el mapa
         if(gameState == SELECTMAP)
         {
             structure = "";
-            int id;
-            int numMaps;
-            socket->receive(packet);
-            packet>>id >> numMaps;
+            int id, numMaps;
+            //Si el servidor y el cliente siguen conectados se recibe el paquete que contiene los mapas y sus descripciones y se muestran por consola
+            if(socket->receive(packet) != sf::Socket::Status::Done)
+                if(Reconnecting(socket, status))
+                    return(0);
+
+            packet >> id >> numMaps;
 
             for(;numMaps>0;numMaps--)
             {
-                std::string name;
-                std::string description;
-                packet>>name>>description;
-                std::cout<<name<<std::endl<<description<<std::endl<<std::endl;
+                std::string name, description;
+                packet >> name >> description;
+                std::cout << name << std::endl << description << std::endl << std::endl;
             }
 
             bool mapSelected = false;
+
+            //Mientras que no se seleccione un mapa válido
             do
-            {
-                std::cout<<"Insert the name of the map you want to play:"<<std::endl;
-                std::string mapName;
-                std::cin>>mapName;
+            {   //Se pregunta el nombre del mapa al que se quiere jugar
+                std::cout << "Insert the name of the map you want to play:" << std::endl;
+                std::cin >> mapName;
 
                 packet.clear();
                 packet << mapName;
-                socket->send(packet);
+                //Si el servidor y el cliente siguen conectados se envia el paquete que contiene el nombre introducido por pantalla
+                if(socket->send(packet) != sf::Socket::Status::Done)
+                    if(Reconnecting(socket, status))
+                        return(0);
+                //Si el nombre introducido ha sido diferente a "exit"
                 if(mapName != "exit")
-                {
-                    socket->receive(packet);
-                    packet>>mapSelected;
+                {   //Si el servidor y el cliente siguen conectados se recibe si la información enviada es correcta o no
+                    if(socket->receive(packet) != sf::Socket::Status::Done)
+                        if(Reconnecting(socket, status))
+                            return(0);
+                    packet >> mapSelected;
                 }
+                //Si el nombre introducido ha sido "exit" el programa termina
                 else
-                    return;
+                    return (0);
 
             }while(!mapSelected);
-
+            //Si el mapa seleccionado existe se recoge la estructura del mapa
             packet >> structure;
 
             playing = true;
@@ -181,6 +198,7 @@ int main(){
 
             grid.resize(20,std::vector<GameObject>(20));
 
+            //Se inicializa el tablero, las posiciones de los spawns y la posicion inicial del jugador
             for (int i =0; i<20; i++)
             {
                 for(int j = 0; j<20; j++)
@@ -198,18 +216,24 @@ int main(){
                 }
             }
 
-            packet.clear();
             int numberOfSpawns = spawns.size();
+            packet.clear();
             packet << numberOfSpawns;
-            socket->send(packet);
+            //Si el servidor y el cliente siguen conectados se envia el número de spawns que hay en ese mapa
+            if(socket->send(packet) != sf::Socket::Status::Done)
+                if(Reconnecting(socket, status))
+                    return(0);
         }
+        //Si el jugador ha elegido el mapa
         else if(gameState == PLAY)
         {
-            std::system("clear");
+            //std::system("clear");
             std::cout << "Playing..." << std::endl;
+            //Se inicia el thread de recepción de packets para que la ejecución principal no se detenga
             std::thread recieve(RecieveOnPlay, socket);
-            PrintSFML(socket, structure);
-
+            //Se llama a la función que se encarga de la ventana de juego
+            PrintSFML(socket, structure, mapName);
+            //Cuando el thread ha acabado (el jugador sale de la ventana de juego)
             recieve.join();
             std::system("clear");
             gameState = SELECTMAP;
@@ -217,6 +241,22 @@ int main(){
     }while(true);
 
     socket->disconnect();
+}
+
+bool Reconnecting(sf::TcpSocket* socket, sf::Socket::Status status)
+{
+    if (status != sf::Socket::Done)
+    {
+        std::cout << "Lost connection with server." << std::endl << "Trying to reconnect..." << std::endl;
+        status = socket->connect("79.154.246.236", 50000, sf::seconds(10.f));
+        if (status != sf::Socket::Done)
+        {
+          std::cout << "ERROR: Server unreachable." << std::endl;
+          socket->disconnect();
+          return true;
+        }
+    }
+    return false;
 }
 
 sf::Vector2f BoardToWindows(sf::Vector2f _position)
@@ -232,7 +272,7 @@ void RecieveOnPlay(sf::TcpSocket *socket)
         int id;
 
         if(socket->receive(packet)!= sf::Socket::Status::Done)
-            break;
+                break;
 
         packet >> id;
 
@@ -251,7 +291,7 @@ void RecieveOnPlay(sf::TcpSocket *socket)
             int numOfPokemons;
             packet>>numOfPokemons;
 
-            std::cout << std::endl << std::endl <<"Inventory: " << std::endl << std::endl;
+            std::cout << std::endl << std::endl << "Inventory: " << std::endl << std::endl;
             for(;numOfPokemons>0;numOfPokemons--){
                 std::string pokemon;
                 packet>>pokemon;
@@ -265,12 +305,17 @@ void RecieveOnPlay(sf::TcpSocket *socket)
             packet>>numOfCoins;
             std::cout << "Coins: " << numOfCoins <<std::endl;
         }
+        else if(id == RECOLLECT)
+        {
+            packet >> recollectCoins;
+            std::cout << "You can recollect " << recollectCoins << " coins";
+        }
     }
 }
 
-void PrintSFML(sf::TcpSocket *socket, std::string structure)
+void PrintSFML(sf::TcpSocket *socket, std::string structure, std::string mapName)
 {
-    sf::RenderWindow window(sf::VideoMode(640,640), "Interfaz cuadraditos");
+    sf::RenderWindow window(sf::VideoMode(640,640), mapName);
     sf::Packet packet;
 
     while(window.isOpen())
@@ -289,10 +334,12 @@ void PrintSFML(sf::TcpSocket *socket, std::string structure)
                 window.close();
                 packet.clear();
                 packet<<DISCONNECT;
+                std::cout << "disconnect" << std::endl;
                 socket->send(packet);
                 playing = false;
             }
-            else if(event.type == sf::Event::KeyPressed){
+            else if(event.type == sf::Event::KeyPressed)
+            {
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
                 {
                     for(auto &x : grid)
@@ -304,8 +351,8 @@ void PrintSFML(sf::TcpSocket *socket, std::string structure)
                     window.close();
                     packet.clear();
                     packet<<DISCONNECT;
+                    std::cout << "disconnect" << std::endl;
                     socket->send(packet);
-                    playing = false;
                 }
                 else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
                 {
@@ -314,7 +361,7 @@ void PrintSFML(sf::TcpSocket *socket, std::string structure)
                         playerPosition.x--;
                         if(grid[playerPosition.y][playerPosition.x] == GameObject::POKEMON)
                         {
-                            for(int i = 0; i < spawns.size(); i++)
+                            for(unsigned int i = 0; i < spawns.size(); i++)
                             {
                                 if(spawns[i].position.x == playerPosition.y && spawns[i].position.y == playerPosition.x)
                                 {
@@ -336,7 +383,7 @@ void PrintSFML(sf::TcpSocket *socket, std::string structure)
                         playerPosition.x++;
                         if(grid[playerPosition.y][playerPosition.x] == GameObject::POKEMON)
                         {
-                            for(int i = 0; i < spawns.size(); i++)
+                            for(unsigned int i = 0; i < spawns.size(); i++)
                             {
                                 if(spawns[i].position.x == playerPosition.y && spawns[i].position.y == playerPosition.x)
                                 {
@@ -358,7 +405,7 @@ void PrintSFML(sf::TcpSocket *socket, std::string structure)
                         playerPosition.y--;
                         if(grid[playerPosition.y][playerPosition.x] == GameObject::POKEMON)
                         {
-                            for(int i = 0; i < spawns.size(); i++)
+                            for(unsigned int i = 0; i < spawns.size(); i++)
                             {
                                 if(spawns[i].position.x == playerPosition.y && spawns[i].position.y == playerPosition.x)
                                 {
@@ -380,7 +427,7 @@ void PrintSFML(sf::TcpSocket *socket, std::string structure)
                         playerPosition.y++;
                         if(grid[playerPosition.y][playerPosition.x] == GameObject::POKEMON)
                         {
-                            for(int i = 0; i < spawns.size(); i++)
+                            for(unsigned int i = 0; i < spawns.size(); i++)
                             {
                                 if(spawns[i].position.x == playerPosition.y && spawns[i].position.y == playerPosition.x)
                                 {
@@ -404,6 +451,12 @@ void PrintSFML(sf::TcpSocket *socket, std::string structure)
                 {
                     packet.clear();
                     packet << COINS;
+                    socket->send(packet);
+                }
+                else if(sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+                {
+                    packet.clear();
+                    packet << RECOLLECT << recollectCoins;
                     socket->send(packet);
                 }
             }
