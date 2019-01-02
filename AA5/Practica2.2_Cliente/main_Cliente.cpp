@@ -30,11 +30,12 @@ struct PokemonsInSpawns
 };
 
 bool playing = false;
+bool inGame=false;
+bool canRecolect=false;
 std::vector<std::vector<GameObject>> grid(GameObject::NONE);
 std::vector<PokemonsInSpawns> spawns;
 sf::Vector2f playerPosition;
 int recollectCoins;
-bool canRecolect = false;
 
 int main(){
     //Inicializamos el socket para la conexión con el servidor
@@ -144,6 +145,7 @@ int main(){
     }while(!validName);
 
     //Variables necesarias para el flujo de juego (selección de nivel y juego)
+    inGame = true;
     GameState gameState = SELECTMAP;
     std::string structure;
     std::system("clear");
@@ -232,6 +234,7 @@ int main(){
             packet.clear();
             packet << numberOfSpawns;
             //Si el servidor y el cliente siguen conectados se envia el número de spawns que hay en ese mapa
+
             if(socket->send(packet) != sf::Socket::Status::Done)
             {
                 Disconnect(socket);
@@ -241,18 +244,18 @@ int main(){
         //Si el jugador ha elegido el mapa
         else if(gameState == PLAY)
         {
+            std::system("clear");
+            std::cout << "Playing..." << std::endl;
             //Se inicia el thread de recepción de packets para que la ejecución principal no se detenga
             std::thread recieve(RecieveOnPlay, socket);
             //Se llama a la función que se encarga de la ventana de juego
             PrintSFML(socket, structure, mapName);
-            std::system("clear");
-            std::cout << "Playing..." << std::endl;
             //Cuando el thread ha acabado (el jugador sale de la ventana de juego) vuelve al menú de selección de mapa
             recieve.join();
             std::system("clear");
             gameState = SELECTMAP;
         }
-    }while(true);
+    }while(inGame);
 
     socket->disconnect();
 }
@@ -321,7 +324,6 @@ void RecieveOnPlay(sf::TcpSocket *socket)
         {
             //Se recoge el número de monedas para recoger y se muestra por pantalla
             canRecolect = true;
-            std::cout << "imprime" << std::endl;
             packet >> recollectCoins;
             std::cout << "You can recollect " << recollectCoins << " coins" << std::endl;
         }
@@ -418,14 +420,24 @@ void PrintSFML(sf::TcpSocket *socket, std::string structure, std::string mapName
                         //Se envia al servidor un packet con la id INVENTORY
                         packet.clear();
                         packet << INVENTORY;
-                        socket->send(packet);
+                        if(socket->send(packet)!=sf::Socket::Status::Done)
+                        {
+                            playing=false;
+                            inGame=false;
+                            break;
+                        }
                     }
                     else if( sf::Keyboard::isKeyPressed(sf::Keyboard::M))
                     {
                         //Se envia al servidor un packet con la id COINS
                         packet.clear();
                         packet << COINS;
-                        socket->send(packet);
+                        if(socket->send(packet)!=sf::Socket::Status::Done)
+                        {
+                            playing=false;
+                            inGame=false;
+                            break;
+                        }
                     }
                     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::R) && canRecolect)
                     {
@@ -433,7 +445,14 @@ void PrintSFML(sf::TcpSocket *socket, std::string structure, std::string mapName
                         canRecolect = false;
                         packet.clear();
                         packet << RECOLLECT << recollectCoins;
-                        socket->send(packet);
+                        if(socket->send(packet)!=sf::Socket::Status::Done)
+                        {
+                            playing=false;
+                            inGame=false;
+                            Disconnect(socket);
+                            break;
+                        }
+                        else
                         std::cout << "Coins recollected" << std::endl;
                     }
                 }
