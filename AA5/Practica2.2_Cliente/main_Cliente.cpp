@@ -34,6 +34,7 @@ std::vector<std::vector<GameObject>> grid(GameObject::NONE);
 std::vector<PokemonsInSpawns> spawns;
 sf::Vector2f playerPosition;
 int recollectCoins;
+bool canRecolect = false;
 
 int main(){
     //Inicializamos el socket para la conexión con el servidor
@@ -131,7 +132,7 @@ int main(){
             std::system("clear");
             std::cout << "Session opened: " << username << std::endl << std::endl << "Coins: " << coins << std::endl << std::endl << "Pokemons: " << std::endl;
 
-            for(;pokemonNumber>0;pokemonNumber--)
+            for(; pokemonNumber>0; pokemonNumber--)
             {
                 std::string pokemon;
                 packet >> pokemon;
@@ -145,7 +146,7 @@ int main(){
     //Variables necesarias para el flujo de juego (selección de nivel y juego)
     GameState gameState = SELECTMAP;
     std::string structure;
-
+    std::system("clear");
     do
     {
         std::string mapName;
@@ -240,13 +241,13 @@ int main(){
         //Si el jugador ha elegido el mapa
         else if(gameState == PLAY)
         {
-            //std::system("clear");
-            std::cout << "Playing..." << std::endl;
             //Se inicia el thread de recepción de packets para que la ejecución principal no se detenga
             std::thread recieve(RecieveOnPlay, socket);
             //Se llama a la función que se encarga de la ventana de juego
             PrintSFML(socket, structure, mapName);
-            //Cuando el thread ha acabado (el jugador sale de la ventana de juego)
+            std::system("clear");
+            std::cout << "Playing..." << std::endl;
+            //Cuando el thread ha acabado (el jugador sale de la ventana de juego) vuelve al menú de selección de mapa
             recieve.join();
             std::system("clear");
             gameState = SELECTMAP;
@@ -268,32 +269,37 @@ sf::Vector2f BoardToWindows(sf::Vector2f _position)
 }
 
 void RecieveOnPlay(sf::TcpSocket *socket)
-{
+{   //Mientras esté la ventana de juego abierta reciben packets
     while(playing)
     {
         sf::Packet packet;
         int id;
 
         if(socket->receive(packet)!= sf::Socket::Status::Done)
-                break;
+            break;
 
         packet >> id;
-
+        //Si se recibe un packet con id SPAWN
         if(id == SPAWN)
         {
             int spawnPos;
             std::string pokemonName;
-            packet>>spawnPos>>pokemonName;
+            //Se recogen los datos de spawn de un pokemon (posición del vector de spawns y nombre del pokemon)
+            packet >> spawnPos >> pokemonName;
+            //Se coloca el pokemon en la grid para que se muestre en pantalla
             grid[spawns[spawnPos].position.x][spawns[spawnPos].position.y]=POKEMON;
+            //Se pone el nombre del pokemon que hay en ese spawn en la posición donde está
             spawns[spawnPos].name = pokemonName;
         }
+        //Si se recibe un packet con id DISCONNECT
         else if(id == DISCONNECT)
             return;
+        //Si se recibe un packet con id INVENTORY
         else if(id == INVENTORY)
         {
             int numOfPokemons;
-            packet>>numOfPokemons;
-
+            //Se recogen el numero de pokemons y los nombres del packet y se muestran en consola
+            packet >> numOfPokemons;
             std::cout << std::endl << std::endl << "Inventory: " << std::endl << std::endl;
             for(;numOfPokemons>0;numOfPokemons--){
                 std::string pokemon;
@@ -302,173 +308,153 @@ void RecieveOnPlay(sf::TcpSocket *socket)
             }
             std::cout << std::endl;
         }
+        //Si se recibe un packet con id COINS
         else if(id == COINS)
         {
             int numOfCoins;
-            packet>>numOfCoins;
+            //Se recoge el número de monedas del packet y se muestra por consola
+            packet >> numOfCoins;
             std::cout << "Coins: " << numOfCoins <<std::endl;
         }
+        //Si se recibe un packet con id RECOLLECT
         else if(id == RECOLLECT)
         {
+            //Se recoge el número de monedas para recoger y se muestra por pantalla
+            canRecolect = true;
+            std::cout << "imprime" << std::endl;
             packet >> recollectCoins;
-            std::cout << "You can recollect " << recollectCoins << " coins";
+            std::cout << "You can recollect " << recollectCoins << " coins" << std::endl;
         }
     }
 }
 
 void PrintSFML(sf::TcpSocket *socket, std::string structure, std::string mapName)
 {
+    //Creamos una ventana
     sf::RenderWindow window(sf::VideoMode(640,640), mapName);
     sf::Packet packet;
 
     while(window.isOpen())
     {
         sf::Event event;
-        //Este primer WHILE es para controlar los eventos del mouse
+        //Controlamos los eventos
         while(window.pollEvent(event))
         {
             if(event.type == sf::Event::Closed){
-                for(auto &x : grid)
-                {
-                    for( auto &g : x)
-                        g = NONE;
-                }
-                spawns.resize(0);
-                window.close();
-                packet.clear();
-                packet<<DISCONNECT;
-                std::cout << "disconnect" << std::endl;
-                socket->send(packet);
-                playing = false;
-            }
-            else if(event.type == sf::Event::KeyPressed)
-            {
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-                {
+                    //Se reinicia la grid con todo NONE
                     for(auto &x : grid)
                     {
                         for( auto &g : x)
                             g = NONE;
                     }
+                    //Se pone spawns a tamaño 0 para borrar los spawns del mapa recien cerrado y se cierra la ventana
                     spawns.resize(0);
                     window.close();
+                    //Se envia al servidor un paquete de disconnect
                     packet.clear();
                     packet<<DISCONNECT;
-                    std::cout << "disconnect" << std::endl;
                     socket->send(packet);
+                    playing = false;
                 }
-                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+                else if(event.type == sf::Event::KeyPressed)
                 {
-                    if(grid[playerPosition.y][playerPosition.x - 1] != GameObject::OBSTACLE){
-                        grid[playerPosition.y][playerPosition.x]=GameObject::NONE;
-                        playerPosition.x--;
-                        if(grid[playerPosition.y][playerPosition.x] == GameObject::POKEMON)
-                        {
-                            for(unsigned int i = 0; i < spawns.size(); i++)
-                            {
-                                if(spawns[i].position.x == playerPosition.y && spawns[i].position.y == playerPosition.x)
-                                {
-                                    packet.clear();
-                                    packet<<CATCH<<i;
-                                    socket->send(packet);
-                                    std::cout << "You catched a: "<<spawns[i].name << std::endl;
-                                }
-                            }
-                        }
-                        grid[playerPosition.y][playerPosition.x]=GameObject::PLAYER;
-                    }
-                }
-                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-                {
-                    if(grid[playerPosition.y][playerPosition.x + 1] != GameObject::OBSTACLE)
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
                     {
-                        grid[playerPosition.y][playerPosition.x]=GameObject::NONE;
-                        playerPosition.x++;
-                        if(grid[playerPosition.y][playerPosition.x] == GameObject::POKEMON)
+                        //Se reinicia la grid con todo NONE
+                        for(auto &x : grid)
                         {
-                            for(unsigned int i = 0; i < spawns.size(); i++)
-                            {
-                                if(spawns[i].position.x == playerPosition.y && spawns[i].position.y == playerPosition.x)
-                                {
-                                    packet.clear();
-                                    packet<<CATCH<<i;
-                                    socket->send(packet);
-                                    std::cout << "You catched a: "<<spawns[i].name << std::endl;
-                                }
-                            }
+                            for( auto &g : x)
+                                g = NONE;
                         }
-                        grid[playerPosition.y][playerPosition.x]=GameObject::PLAYER;
+                        //Se pone spawns a tamaño 0 para borrar los spawns del mapa recien cerrado y se cierra la ventana
+                        spawns.resize(0);
+                        window.close();
+                        //Se envia al servidor un paquete de disconnect
+                        packet.clear();
+                        packet<<DISCONNECT;
+                        socket->send(packet);
                     }
-                }
-                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-                {
-                    if(grid[playerPosition.y - 1][playerPosition.x] != GameObject::OBSTACLE)
+                    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
                     {
-                        grid[playerPosition.y][playerPosition.x]=GameObject::NONE;
-                        playerPosition.y--;
-                        if(grid[playerPosition.y][playerPosition.x] == GameObject::POKEMON)
-                        {
-                            for(unsigned int i = 0; i < spawns.size(); i++)
-                            {
-                                if(spawns[i].position.x == playerPosition.y && spawns[i].position.y == playerPosition.x)
-                                {
-                                    packet.clear();
-                                    packet<<CATCH<<i;
-                                    socket->send(packet);
-                                    std::cout << "You catched a: "<<spawns[i].name << std::endl;
-                                }
-                            }
+                        //Si en la posición objetivo no hay una pared se mueve a esa posicion
+                        if(grid[playerPosition.y][playerPosition.x - 1] != GameObject::OBSTACLE){
+                            grid[playerPosition.y][playerPosition.x]=GameObject::NONE;
+                            playerPosition.x--;
+                            grid[playerPosition.y][playerPosition.x]=GameObject::PLAYER;
                         }
-                        grid[playerPosition.y][playerPosition.x]=GameObject::PLAYER;
                     }
-                }
-                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-                {
-                    if(grid[playerPosition.y + 1][playerPosition.x] != GameObject::OBSTACLE)
+                    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
                     {
-                        grid[playerPosition.y][playerPosition.x]=GameObject::NONE;
-                        playerPosition.y++;
-                        if(grid[playerPosition.y][playerPosition.x] == GameObject::POKEMON)
+                        //Si en la posición objetivo no hay una pared se mueve a esa posicion
+                        if(grid[playerPosition.y][playerPosition.x + 1] != GameObject::OBSTACLE)
                         {
-                            for(unsigned int i = 0; i < spawns.size(); i++)
-                            {
-                                if(spawns[i].position.x == playerPosition.y && spawns[i].position.y == playerPosition.x)
-                                {
-                                    packet.clear();
-                                    packet<<CATCH<<i;
-                                    socket->send(packet);
-                                    std::cout << "You catched a: "<<spawns[i].name << std::endl;
-                                }
-                            }
+                            grid[playerPosition.y][playerPosition.x]=GameObject::NONE;
+                            playerPosition.x++;
+                            grid[playerPosition.y][playerPosition.x]=GameObject::PLAYER;
                         }
-                        grid[playerPosition.y][playerPosition.x]=GameObject::PLAYER;
+                    }
+                    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+                    {
+                        //Si en la posición objetivo no hay una pared se mueve a esa posicion
+                        if(grid[playerPosition.y - 1][playerPosition.x] != GameObject::OBSTACLE)
+                        {
+                            grid[playerPosition.y][playerPosition.x]=GameObject::NONE;
+                            playerPosition.y--;
+                            grid[playerPosition.y][playerPosition.x]=GameObject::PLAYER;
+                        }
+                    }
+                    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+                    {
+                        //Si en la posición objetivo no hay una pared se mueve a esa posicion
+                        if(grid[playerPosition.y + 1][playerPosition.x] != GameObject::OBSTACLE)
+                        {
+                            grid[playerPosition.y][playerPosition.x]=GameObject::NONE;
+                            playerPosition.y++;
+                            grid[playerPosition.y][playerPosition.x]=GameObject::PLAYER;
+                        }
+                    }
+                    else if( sf::Keyboard::isKeyPressed(sf::Keyboard::I))
+                    {
+                        //Se envia al servidor un packet con la id INVENTORY
+                        packet.clear();
+                        packet << INVENTORY;
+                        socket->send(packet);
+                    }
+                    else if( sf::Keyboard::isKeyPressed(sf::Keyboard::M))
+                    {
+                        //Se envia al servidor un packet con la id COINS
+                        packet.clear();
+                        packet << COINS;
+                        socket->send(packet);
+                    }
+                    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::R) && canRecolect)
+                    {
+                        //Se envia al servidor un packet con la id RECOLECT
+                        canRecolect = false;
+                        packet.clear();
+                        packet << RECOLLECT << recollectCoins;
+                        socket->send(packet);
+                        std::cout << "Coins recollected" << std::endl;
                     }
                 }
-                else if( sf::Keyboard::isKeyPressed(sf::Keyboard::I))
-                {
-                    packet.clear();
-                    packet << INVENTORY;
-                    socket->send(packet);
-                }
-                else if( sf::Keyboard::isKeyPressed(sf::Keyboard::M))
-                {
-                    packet.clear();
-                    packet << COINS;
-                    socket->send(packet);
-                }
-                else if(sf::Keyboard::isKeyPressed(sf::Keyboard::R))
-                {
-                    packet.clear();
-                    packet << RECOLLECT << recollectCoins;
-                    socket->send(packet);
-                }
+            }
+
+        //Si el jugador está encima de un spawn de pokemons y hay un pokemon en ese spawn lo caprura y envia un packet al servidor con la posición en el vector de ese spawn
+        for(unsigned int i = 0; i < spawns.size(); i++)
+        {
+            if(spawns[i].position.x == playerPosition.y && spawns[i].position.y == playerPosition.x && spawns[i].name != "")
+            {
+                packet.clear();
+                packet<<CATCH<<i;
+                socket->send(packet);
+                std::cout << "You catched a: "<<spawns[i].name << std::endl;
+                spawns[i].name = "";
             }
         }
 
         window.clear();
 
-        //A partir de aquí es para pintar por pantalla
-        //Este FOR es para el mapa --> Esto es para pintar casillas estilo tablero de ajedrez
+        //Se pinta la pantalla con el juego
         for (int i =0; i<20; i++)
         {
             for(int j = 0; j<20; j++)
@@ -479,6 +465,13 @@ void PrintSFML(sf::TcpSocket *socket, std::string structure, std::string mapName
                         rectBlanco.setPosition(sf::Vector2f(j*CELL_SIZE, i*CELL_SIZE));
                         window.draw(rectBlanco);
                 }
+                else if(grid[i][j] == GameObject::POKEMON){
+                    sf::CircleShape shape(RADIUS_AVATAR);
+                    shape.setFillColor(sf::Color::Magenta);
+                    sf::Vector2f posicionDibujar = BoardToWindows(sf::Vector2f(j,i));
+                    shape.setPosition(posicionDibujar);
+                    window.draw(shape);
+                }
                 else if (grid[i][j]==GameObject::PLAYER){
                     sf::CircleShape shape(RADIUS_AVATAR);
                     shape.setFillColor(sf::Color::Blue);
@@ -486,18 +479,8 @@ void PrintSFML(sf::TcpSocket *socket, std::string structure, std::string mapName
                     shape.setPosition(posicionDibujar);
                     window.draw(shape);
                 }
-                else if (grid[i][j]==GameObject::POKEMON){
-                    sf::CircleShape shape(RADIUS_AVATAR);
-                    shape.setFillColor(sf::Color::Magenta);
-                    sf::Vector2f posicionDibujar = BoardToWindows(sf::Vector2f(j,i));
-                    shape.setPosition(posicionDibujar);
-                    window.draw(shape);
-                }
             }
         }
-
-        //TODO: Para pintar un círculo que podría simular el personaje
         window.display();
     }
-
 }
