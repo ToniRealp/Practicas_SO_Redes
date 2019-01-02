@@ -11,7 +11,7 @@
 #include <chrono>
 #include <string>
 
-enum ID {LOGIN, SIGNUP, MAPS, DISCONNECT, SPAWN, CATCH};
+enum ID {LOGIN, SIGNUP, MAPS, DISCONNECT, SPAWN, CATCH, VALIDSPAWN, INVENTORY, COINS};
 enum GAMESTATE {MENU, PLAYING};
 std::vector<sf::TcpSocket*> sockets;
 
@@ -24,7 +24,7 @@ struct PokeInfo
     PokeInfo(int _id, std::string _name, int _rate, int _minCoins, int _maxCoins):id(_id),name(_name),rate(_rate),minCoins(_minCoins), maxCoins(_maxCoins){}
 };
 
-void pokemonGen(sf::TcpSocket* socket, int spawnTime, std::vector<PokeInfo> pokeInfo, std::vector<int>* pokemonSpawn, bool* playing){
+void pokemonGen(sf::TcpSocket* socket, int spawnTime, std::vector<PokeInfo> pokeInfo, std::vector<int> *pokemonSpawn, bool *playing){
 
     int totalRatio = 0;
     for(int i=0; i<pokeInfo.size();i++)
@@ -35,6 +35,7 @@ void pokemonGen(sf::TcpSocket* socket, int spawnTime, std::vector<PokeInfo> poke
     auto start = std::chrono::high_resolution_clock::now();
     double duration=0;
     int pokemonId;
+    sf::Packet packet;
 
     while(*playing)
     {
@@ -47,6 +48,7 @@ void pokemonGen(sf::TcpSocket* socket, int spawnTime, std::vector<PokeInfo> poke
             bool found = false;
             do{
                 int pos = rand()%(pokemonSpawn->size());
+
                 if(pokemonSpawn->at(pos)==0){
                     int spawnId = rand()%(totalRatio+1);
                     int counter = 0;
@@ -56,7 +58,7 @@ void pokemonGen(sf::TcpSocket* socket, int spawnTime, std::vector<PokeInfo> poke
                         if(spawnId<=counter)
                         {
                             pokemonSpawn->at(pos)=i;
-                            sf::Packet packet;
+                            packet.clear();
                             packet<<SPAWN<<pos<<pokeInfo[i].name;
                             if(!*playing)
                                 return;
@@ -71,6 +73,7 @@ void pokemonGen(sf::TcpSocket* socket, int spawnTime, std::vector<PokeInfo> poke
             }while(!found);
         }
     }
+    std::cout<<"spawn thread exit correctly"<<std::endl;
 }
 
 
@@ -96,17 +99,17 @@ void connection(sf::TcpSocket* socket)
     do{
 
         packet.clear();
-        std::cout<<"esperando username"<<std::endl;
+        std::cout<<"Waiting for username"<<std::endl;
 
         if(socket->receive(packet)!=sf::Socket::Done)
         {
-            std::cout<<"el cliente se ha desconectado"<<std::endl;
+            std::cout<<"The client has disconnected"<<std::endl;
             break;
         }
         else
         {
             packet>>id>>username>>password;
-            std::cout<<"datos de login: "<<username<<" "<<password<<std::endl;
+            std::cout<<"Login credentials: "<<username<<" "<<password<<std::endl;
         }
         //Si existe algun usuario con esa combinación de Username y Password se inicia sesión en esa cuenta
 
@@ -162,70 +165,12 @@ void connection(sf::TcpSocket* socket)
 
         if(socket->send(packet)!= sf::Socket::Done)
         {
-            std::cout<<"cliente se ha desconectado"<<std::endl;
+            std::cout<<"Client has disconnected"<<std::endl;
             break;
         }
 
     }while(!validName);
 
-	//Se accede a la BD para sacar la información de los mapas, que son printeados en pantalla (nombre y descripción)
-    packet.clear();
-    std::string mapName;
-    std::string mapStructure;
-    int numMapas;
-
-    resultSet = stmt->executeQuery("SELECT COUNT(*) FROM Mapas");
-
-    if(resultSet->next())
-        numMapas=resultSet->getInt(1);
-
-    resultSet = stmt->executeQuery("SELECT * FROM Mapas");
-    packet<<MAPS<<numMapas;
-
-    while(resultSet->next())
-        packet<<resultSet->getString("Name") << resultSet->getString("Description");
-
-    socket->send(packet);
-	//Se pregunta al usuario que mapa quiere jugar. Debe escribir el nombre del mapa
-    bool mapSelected = false;
-    int spawnTime;
-
-    do {
-        std::cout<<"Waiting for map selection"<<std::endl;
-
-        if(socket->receive(packet)!=sf::Socket::Status::Done)
-        {
-            std::cout<<"el cliente se ha desconectado"<<std::endl;
-            break;
-        }
-
-        packet >> mapName;
-        resultSet->beforeFirst();
-
-        while(resultSet->next())
-        {
-			//Se comprueba que el mapa escrito exista en la BD
-            if(mapName==resultSet->getString("Name"))
-            {
-                std::cout << "Map: "<<mapName <<"Selected"<< std::endl;
-                mapStructure = resultSet->getString("Structure");
-                spawnTime = resultSet->getInt("SpawnTime");
-                mapSelected=true;
-                logInSec = time(0);
-                break;
-            }
-        }
-
-        packet.clear();
-        packet<<mapSelected<<mapStructure;
-        socket->send(packet);
-
-    }while(!mapSelected);
-
-    int numberOfSpawns;
-    socket->receive(packet);
-    packet>>numberOfSpawns;
-    std::vector<int> pokemonSpawn(numberOfSpawns,0);
     std::vector<PokeInfo> pokemonInfo;
 
     resultSet = stmt->executeQuery("SELECT * FROM Pokemons");
@@ -233,18 +178,17 @@ void connection(sf::TcpSocket* socket)
     while(resultSet->next())
         pokemonInfo.push_back(PokeInfo(resultSet->getInt("ID"),resultSet->getString("Name"),resultSet->getInt("Ratio"),resultSet->getInt("MinCoins"),resultSet->getInt("MaxCoins")));
 
+    std::vector<int> pokemonSpawn;
     bool playing = true;
-    bool inGame=true;
-    std::thread PokemonGeneration(&pokemonGen, socket, spawnTime, pokemonInfo, &pokemonSpawn, &playing);
-
-    //resultSet->close();
-    GAMESTATE gameState = PLAYING;
+    bool inGame= true;
+    bool validSpawn;
+    GAMESTATE gameState = MENU;
 
     do{
 
         if(gameState==MENU)
         {
-            std::cout<<"in map selection"<<std::endl;
+            std::cout<<"In map selection"<<std::endl;
             packet.clear();
             std::string mapName;
             std::string mapStructure;
@@ -271,12 +215,16 @@ void connection(sf::TcpSocket* socket)
 
                 if(socket->receive(packet)!=sf::Socket::Status::Done)
                 {
-                    std::cout<<"el cliente se ha desconectado"<<std::endl;
+                    std::cout<<"Cliente has disconnected"<<std::endl;
                     break;
                 }
 
                 packet >> mapName;
                 resultSet->beforeFirst();
+                if(mapName=="exit"){
+                    inGame=false;
+                    break;
+                }
 
                 while(resultSet->next())
                 {
@@ -296,12 +244,22 @@ void connection(sf::TcpSocket* socket)
                 packet<<mapSelected<<mapStructure;
                 socket->send(packet);
 
+
             }while(!mapSelected);
 
-            gameState=PLAYING;
-            std::thread PokemonGeneration(&pokemonGen, socket, spawnTime, pokemonInfo, &pokemonSpawn, &playing);
+            if(inGame)
+            {
+                int numberOfSpawns;
+                socket->receive(packet);
+                packet>>numberOfSpawns;
+                pokemonSpawn.resize(numberOfSpawns);
+                std::fill(pokemonSpawn.begin(),pokemonSpawn.end(),0);
+                playing=true;
+                std::thread PokemonGeneration(&pokemonGen, socket, spawnTime, pokemonInfo, &pokemonSpawn, &playing);
+                PokemonGeneration.detach();
+                gameState=PLAYING;
+            }
         }
-
 
         if(gameState==PLAYING)
         {
@@ -311,18 +269,9 @@ void connection(sf::TcpSocket* socket)
             }
             else
                 packet>>id;
-                std::cout<<"id: "<<id<<std::endl;
 
             if(id == DISCONNECT)
             {
-                 for(int it = 0;it<sockets.size();it++)
-                {
-                    if(sockets[it]==socket)
-                    {
-                        sockets.erase(sockets.begin()+it);
-                        break;
-                    }
-                }
 
                 tm* logInTime, * logOutTime;
                 char logInBuf [22];
@@ -339,12 +288,11 @@ void connection(sf::TcpSocket* socket)
                 strftime(logOutBuf,22,"%F %X\0",logOutTime);
                 std::string logOutStr(logOutBuf);
 
-                stmt->executeUpdate("INSERT INTO Sesion(PlayerID, LogInTime, LogOutTime) VALUES ("+playerID+",'"+logInStr+"','"+logOutStr+"')");
+                stmt->executeUpdate("INSERT INTO Sesion(PlayerID, LogInTime, LogOutTime) VALUES ('"+playerID+"','"+logInStr+"','"+logOutStr+"')");
 
-                std::cout<<"El cliente "<<username<<" se ha desconectado"<<std::endl;
+                std::cout<<"Cliente "<<username<<" has ended his sesion"<<std::endl;
 
                 playing=false;
-                PokemonGeneration.join();
                 std::cout<<"server joined"<<std::endl;
                 gameState = MENU;
                 packet.clear();
@@ -358,16 +306,52 @@ void connection(sf::TcpSocket* socket)
                 packet>>pos;
                 std::string plID(playerID);
                 std::string pokID = std::to_string(pokemonInfo[pokemonSpawn[pos]].id);
+                std::string pokeCoins = std::to_string(coins + pokemonInfo[pokemonSpawn[pos]].minCoins+rand()%(pokemonInfo[pokemonSpawn[pos]].maxCoins-pokemonInfo[pokemonSpawn[pos]].minCoins));
                 std::cout<<pokemonInfo[pokemonSpawn[pos]].name<<std::endl;
                 pokemonSpawn[pos]=0;
                 stmt->executeUpdate("INSERT INTO PokemonXplayer(PlayerID, PokemonID) VALUES('"+plID+"','"+pokID+"')");
+                stmt->executeUpdate("UPDATE Player SET Coins ="+pokeCoins+" WHERE ID ="+playerID);
+
+            }
+
+            else if(id==INVENTORY)
+            {
+                resultSet=stmt->executeQuery("SELECT Name FROM Pokemons WHERE ID IN (SELECT PokemonID FROM PokemonXplayer WHERE PlayerID ="+playerID+")");
+                int numPokemons=0;
+                std::vector<std::string> pokemonNames;
+                while(resultSet->next()){
+                    numPokemons++;
+                    pokemonNames.push_back(resultSet->getString(1));
+                }
+                packet.clear();
+                packet<<INVENTORY<<numPokemons;
+                for(auto x : pokemonNames)
+                    packet<<x;
+                socket->send(packet);
+            }
+            else if(id==COINS)
+            {
+                resultSet=stmt->executeQuery("SELECT Coins FROM Player WHERE ID ="+playerID);
+                resultSet->next();
+                coins=resultSet->getInt(1);
+                packet.clear();
+                packet<<COINS<<coins;
+                socket->send(packet);
 
             }
         }
-
-
     }while(inGame);
 
+    for(int it = 0;it<sockets.size();it++)
+    {
+        if(sockets[it]==socket)
+        {
+            sockets.erase(sockets.begin()+it);
+            break;
+        }
+    }
+
+    std::cout<<"Client: "<< username <<"has disconnected"<<std::endl;
 }
 
 int main()
@@ -379,7 +363,7 @@ int main()
 
     if(status != sf::Socket::Done)
     {
-        std::cout<<"error en la creacion del listener";
+        std::cout<<"Error in listener creation";
         return 0;
     }
 
@@ -387,15 +371,15 @@ int main()
         sf::TcpSocket* incoming = new sf::TcpSocket;
         if(dispatcher.accept(*incoming) != sf::Socket::Done)
         {
-            std::cout<<"error en la connexion";
+            std::cout<<"Error in socket creation";
         }
         else{
-            std::cout<<"Conectado"<<std::endl;
+            std::cout<<"Connected"<<std::endl;
             sockets.push_back(incoming);
             std::thread conn(&connection, incoming);
             conn.detach();
         }
     }
     dispatcher.close();
-    std::cout<<"ejecucion terminada";
+    std::cout<<"Execution ended";
 }
