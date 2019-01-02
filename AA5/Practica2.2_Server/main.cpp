@@ -46,13 +46,13 @@ void coinGeneration(sf::TcpSocket *socket, time_t *lastRecollection, int *numPok
         auto endfinal = std::chrono::high_resolution_clock::now();
         duration=std::chrono::duration_cast<std::chrono::seconds>(endfinal-start).count();
         //Cada 5 segundos comprovamos si se han de generar las monedas (para no hacerlo en cada frame)
-        if(duration>=5)
+        if(duration>=1)
         {
             start=std::chrono::high_resolution_clock::now();
             remainigTime=time(0)-*lastRecollection;
             actualRecollectionTm=localtime(&remainigTime);
             //Se generan monedas si la diferencia entre el timpo actual y la ultima vez que se recogieron es mas grande de 1 min
-            if(actualRecollectionTm->tm_sec>=60 && *canRecolect)
+            if(actualRecollectionTm->tm_sec>=30 && *canRecolect)
             {
                 *canRecolect=false;
                 sf::Packet packet;
@@ -199,6 +199,7 @@ void connection(sf::TcpSocket* socket)
                     lastRecollection=String2time_t(lastRecollectionStr);
                 }
                 coins = 0;
+                numPokemons=0;
             }
         }
 
@@ -345,7 +346,7 @@ void connection(sf::TcpSocket* socket)
 
                 stmt->executeUpdate("INSERT INTO Sesion(PlayerID, LogInTime, LogOutTime) VALUES ("+playerID+",'"+logInStr+"','"+logOutStr+"')");
 
-                std::cout<<"Cliente "<<username<<" has ended his sesion"<<std::endl;
+                std::cout<<"Client: "<<username<<" has ended his sesion"<<std::endl;
 
                 playing=false;
                 //Se espera al join del thread de generacion de pokemons
@@ -367,6 +368,7 @@ void connection(sf::TcpSocket* socket)
                 pokemonSpawn[pos]=0;
                 stmt->executeUpdate("INSERT INTO PokemonXplayer(PlayerID, PokemonID) VALUES('"+plID+"','"+pokID+"')");
                 stmt->executeUpdate("UPDATE Player SET Coins ="+pokeCoins+" WHERE ID ="+playerID);
+                numPokemons++;
 
             }
 
